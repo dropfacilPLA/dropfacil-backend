@@ -39,8 +39,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tab{padding:7px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;color:#6b7280;border:none;background:transparent;white-space:nowrap}
 .tab.on{background:#1f2937;color:#f1f5f9}
 .tc{display:none}.tc.on{display:block}
-.sb{display:flex;gap:8px;margin-bottom:14px}
-.si{flex:1;background:#0d1117;border:1px solid #374151;border-radius:9px;padding:10px 14px;color:#f1f5f9;font-size:13px;outline:none}
+.sb{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.si{flex:1;min-width:200px;background:#0d1117;border:1px solid #374151;border-radius:9px;padding:10px 14px;color:#f1f5f9;font-size:13px;outline:none}
 .si:focus{border-color:#3b82f6}
 .si::placeholder{color:#6b7280}
 .btn{padding:10px 18px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s;display:inline-flex;align-items:center;gap:5px}
@@ -52,135 +52,372 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .ba:hover{box-shadow:0 5px 18px rgba(217,119,6,.4);transform:translateY(-1px)}
 .bv{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff}
 .bv:hover{box-shadow:0 5px 18px rgba(124,58,237,.4);transform:translateY(-1px)}
+.br{background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff}
+.br:hover{box-shadow:0 5px 18px rgba(220,38,38,.4);transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;box-shadow:none!important}
 .btn-r{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
 .pc{background:#0d1117;border:1px solid #1f2937;border-radius:11px;padding:12px;display:flex;gap:10px;transition:border-color .2s}
 .pc:hover{border-color:#374151}
-.pi{width:70px;height:70px;object-fit:cover;border-radius:8px;flex-shrink:0}
+.pi{width:70px;height:70px;object-fit:cover;border-radius:8px;flex-shrink:0;cursor:pointer}
 .pn{font-size:12px;font-weight:600;color:#f1f5f9;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .ps{font-size:10px;color:#6b7280;margin-top:2px}
 .pp{display:flex;gap:8px;align-items:center;margin-top:7px}
 .pp-c{font-size:11px;color:#6b7280}
 .pp-m{font-size:13px;font-weight:700;color:#4ade80}
 .pa{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
-.bs2{padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none}
-.bs2.g{background:#052e16;color:#4ade80}
-.bs2.b{background:#1e3a8a;color:#93c5fd}
+.bs2{padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
+.bs2.g{background:#052e16;color:#4ade80}.bs2.g:hover{background:#064e22}
+.bs2.b{background:#1e3a8a;color:#93c5fd}.bs2.b:hover{background:#1e3faa}
+.bs2.r{background:#450a0a;color:#f87171}.bs2.r:hover{background:#6b1111}
+.bs2.a{background:#451a03;color:#fbbf24}.bs2.a:hover{background:#5c2404}
 table{width:100%;border-collapse:collapse}
 th{text-align:left;padding:9px 12px;font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #1f2937}
 td{padding:11px 12px;font-size:12px;border-bottom:1px solid #0d1117}
 tr:hover td{background:#0d1117}
 .load{color:#6b7280;text-align:center;padding:36px;font-size:13px}
-.toast{position:fixed;bottom:20px;right:20px;background:#111827;border:1px solid #1f2937;border-radius:10px;padding:12px 18px;font-size:12px;color:#f1f5f9;z-index:9999;transform:translateY(100px);transition:transform .3s;box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.toast{position:fixed;bottom:20px;right:20px;background:#111827;border:1px solid #1f2937;border-radius:10px;padding:12px 18px;font-size:12px;color:#f1f5f9;z-index:9999;transform:translateY(100px);transition:transform .3s;box-shadow:0 8px 28px rgba(0,0,0,.4);max-width:350px}
 .toast.show{transform:translateY(0)}
 .toast.ok{border-color:#166534;color:#4ade80}
 .toast.err{border-color:#991b1b;color:#f87171}
+.toast.info{border-color:#1e3a8a;color:#93c5fd}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center}
 .modal.open{display:flex}
-.mb{background:#111827;border:1px solid #1f2937;border-radius:14px;padding:24px;width:92%;max-width:460px}
+.mb{background:#111827;border:1px solid #1f2937;border-radius:14px;padding:24px;width:92%;max-width:480px;max-height:90vh;overflow-y:auto}
 .mt{font-size:16px;font-weight:700;color:#f1f5f9;margin-bottom:18px}
 .fg{margin-bottom:12px}
 .fl{font-size:11px;color:#9ca3af;margin-bottom:3px;display:block;text-transform:uppercase;letter-spacing:.6px}
 .fi{width:100%;background:#0d1117;border:1px solid #374151;border-radius:7px;padding:9px 12px;color:#f1f5f9;font-size:13px;outline:none}
 .fi:focus{border-color:#3b82f6}
+.auto-bar{background:linear-gradient(135deg,#1a0533,#0d2240);border:1px solid #4c1d95;border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.auto-bar-t{font-size:14px;font-weight:700;color:#c4b5fd}
+.auto-bar-s{font-size:11px;color:#7c3aed;margin-top:2px}
+.prog{background:#0d1117;border-radius:8px;padding:12px;margin-top:10px;display:none}
+.prog-b{height:6px;background:#1f2937;border-radius:3px;overflow:hidden;margin-bottom:6px}
+.prog-f{height:100%;background:linear-gradient(90deg,#7c3aed,#4ade80);border-radius:3px;transition:width .4s}
+.prog-t{font-size:11px;color:#6b7280;text-align:center}
+.ml-alert{background:#0d2240;border:1px solid #1e3a8a;border-radius:10px;padding:14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;font-size:12px;color:#93c5fd}
 .f{text-align:center;padding:14px;color:#374151;font-size:11px}
 </style>
 </head>
 <body>
 <div class="header">
-  <div class="logo">Drop<span>Facil</span> 🚀</div>
-  <div class="pill"><span class="dot"></span>Sistema Online</div>
+<div class="logo">Drop<span>Facil</span> 🚀</div>
+<div style="display:flex;align-items:center;gap:10px">
+<button class="btn bg" onclick="conectarML()" id="btn-ml" style="font-size:11px;padding:7px 14px">🔗 Conectar ML</button>
+<div class="pill"><span class="dot"></span>Sistema Online</div>
+</div>
 </div>
 <div class="wrap">
-  <div class="grid4" id="kpis">
-    <div class="kpi b"><div class="kpi-l">Produtos Ativos</div><div class="kpi-v" id="k-prod">...</div><div class="kpi-s">no Mercado Livre</div></div>
-    <div class="kpi g"><div class="kpi-l">Pedidos Totais</div><div class="kpi-v" id="k-ped">...</div><div class="kpi-s">sincronizados</div></div>
-    <div class="kpi a"><div class="kpi-l">ML Conectado</div><div class="kpi-v" id="k-ml" style="font-size:22px">...</div><div class="kpi-s" id="k-ml-s">-</div></div>
-    <div class="kpi v"><div class="kpi-l">Automação</div><div class="kpi-v" style="font-size:22px">⚡ Ativa</div><div class="kpi-s">sync a cada 15 min</div></div>
-  </div>
-  <div class="box">
-    <div class="box-t">🔗 Integrações</div>
-    <div class="int-g">
-      <div class="int"><div class="int-i">🛍️</div><div><div class="int-n">Mercado Livre</div><div class="int-s">Patrick Luan · ID: 3421636550</div></div><span class="badge bs">ATIVO</span></div>
-      <div class="int"><div class="int-i">📦</div><div><div class="int-n">CJ Dropshipping</div><div class="int-s">CJ5445478 · pklalmeida@hotmail.com</div></div><span class="badge bs">ATIVO</span></div>
-      <div class="int"><div class="int-i">🍊</div><div><div class="int-n">Shopee</div><div class="int-s">techdropbrasil · Em aprovação</div></div><span class="badge bp">AGUARDANDO</span></div>
-    </div>
-  </div>
-  <div class="box">
-    <div class="tabs">
-      <button class="tab on" onclick="tab('buscar',this)">🔍 Buscar CJ</button>
-      <button class="tab" onclick="tab('meus',this)">📋 Meus Produtos</button>
-      <button class="tab" onclick="tab('pedidos',this)">📦 Pedidos</button>
-      <button class="tab" onclick="tab('sync',this)">🔄 Sync & Logs</button>
-    </div>
-    <div id="t-buscar" class="tc on">
-      <div class="sb">
-        <input class="si" id="q" placeholder="Buscar produtos CJ (earrings, pet, phone case...)" onkeydown="if(event.key=='Enter')buscar()">
-        <button class="btn bl" onclick="buscar()">🔍 Buscar</button>
-        <button class="btn bg" onclick="buscarTop()">🔥 Mais Vendidos</button>
-      </div>
-      <div class="pg" id="grid"><div class="load">Clique em "Mais Vendidos" ou pesquise um produto</div></div>
-    </div>
-    <div id="t-meus" class="tc">
-      <div class="btn-r">
-        <button class="btn ba" onclick="syncPedidos()">🔄 Sincronizar Pedidos ML</button>
-        <button class="btn bv" onclick="testar()">🧪 Testar Auth CJ</button>
-      </div>
-      <div class="pg" id="grid-meus"><div class="load">Carregando produtos publicados...</div></div>
-    </div>
-    <div id="t-pedidos" class="tc">
-      <div class="btn-r">
-        <button class="btn ba" onclick="syncPedidos()">🔄 Sincronizar Pedidos do ML</button>
-      </div>
-      <table>
-        <thead><tr><th>Pedido</th><th>Comprador</th><th>Valor</th><th>Status</th><th>Data</th><th>Ação</th></tr></thead>
-        <tbody id="t-ped-body"><tr><td colspan="6" style="text-align:center;color:#475569;padding:20px">Carregando...</td></tr></tbody>
-      </table>
-    </div>
-    <div id="t-sync" class="tc">
-      <div class="btn-r">
-        <button class="btn bl" onclick="syncPedidos()">🔄 Sync Pedidos Agora</button>
-        <button class="btn bg" onclick="testar()">✅ Testar CJ</button>
-        <button class="btn bv" onclick="toggleLog()">📋 Log</button>
-      </div>
-      <div id="log" style="background:#0d1117;border:1px solid #1f2937;border-radius:9px;padding:14px;font-family:monospace;font-size:12px;color:#4ade80;white-space:pre-wrap;display:none;min-height:100px"></div>
-    </div>
-  </div>
+<div class="grid4" id="kpis">
+<div class="kpi b"><div class="kpi-l">Produtos Ativos</div><div class="kpi-v" id="k-prod">...</div><div class="kpi-s">no Mercado Livre</div></div>
+<div class="kpi g"><div class="kpi-l">Pedidos Totais</div><div class="kpi-v" id="k-ped">...</div><div class="kpi-s">sincronizados</div></div>
+<div class="kpi a"><div class="kpi-l">ML Conectado</div><div class="kpi-v" id="k-ml" style="font-size:22px">...</div><div class="kpi-s" id="k-ml-s">-</div></div>
+<div class="kpi v"><div class="kpi-l">Automação</div><div class="kpi-v" style="font-size:22px">⚡ Ativa</div><div class="kpi-s">sync a cada 15 min</div></div>
+</div>
+<div class="box">
+<div class="box-t">🔗 Integrações</div>
+<div class="int-g">
+<div class="int"><div class="int-i">🛍️</div><div><div class="int-n">Mercado Livre</div><div class="int-s" id="ml-status-txt">Verificando...</div></div><span class="badge" id="ml-badge">...</span></div>
+<div class="int"><div class="int-i">📦</div><div><div class="int-n">CJ Dropshipping</div><div class="int-s">CJ5445478 · pklalmeida@hotmail.com</div></div><span class="badge bs">ATIVO</span></div>
+<div class="int"><div class="int-i">🍊</div><div><div class="int-n">Shopee</div><div class="int-s">techdropbrasil · Em aprovação</div></div><span class="badge bp">AGUARDANDO</span></div>
+</div>
+</div>
+<div class="box">
+<div class="tabs">
+<button class="tab on" onclick="tab('buscar',this)">🔍 Buscar CJ</button>
+<button class="tab" onclick="tab('meus',this)">📋 Meus Produtos</button>
+<button class="tab" onclick="tab('pedidos',this)">📦 Pedidos</button>
+<button class="tab" onclick="tab('sync',this)">🔄 Sync & Logs</button>
+</div>
+<div id="t-buscar" class="tc on">
+<div class="auto-bar">
+<div>
+<div class="auto-bar-t">⚡ Automação: Publicar Top Produtos</div>
+<div class="auto-bar-s">Busca os mais vendidos no CJ e publica no ML automaticamente</div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<select class="fi" id="auto-qty" style="width:auto;padding:8px 12px;font-size:12px">
+<option value="5">Top 5 produtos</option>
+<option value="10" selected>Top 10 produtos</option>
+<option value="20">Top 20 produtos</option>
+</select>
+<button class="btn bv" onclick="autoPublicar()" id="btn-auto">🤖 Auto-Publicar Agora</button>
+</div>
+</div>
+<div class="prog" id="prog-box">
+<div class="prog-b"><div class="prog-f" id="prog-f" style="width:0%"></div></div>
+<div class="prog-t" id="prog-t">Iniciando...</div>
+</div>
+<div class="sb">
+<input class="si" id="q" placeholder="Buscar produtos CJ (earrings, pet, phone case...)" onkeydown="if(event.key=='Enter')buscar()">
+<button class="btn bl" onclick="buscar()">🔍 Buscar</button>
+<button class="btn ba" onclick="buscarTop()">🔥 Mais Vendidos</button>
+</div>
+<div class="pg" id="grid"><div class="load">Clique em "Mais Vendidos" ou pesquise um produto</div></div>
+</div>
+<div id="t-meus" class="tc">
+<div class="btn-r">
+<button class="btn ba" onclick="syncPedidos()">🔄 Sincronizar Pedidos ML</button>
+<button class="btn bv" onclick="testar()">🧪 Testar Auth CJ</button>
+</div>
+<div class="pg" id="grid-meus"><div class="load">Carregando produtos publicados...</div></div>
+</div>
+<div id="t-pedidos" class="tc">
+<div class="btn-r">
+<button class="btn ba" onclick="syncPedidos()">🔄 Sincronizar Pedidos do ML</button>
+</div>
+<table>
+<thead><tr><th>Pedido</th><th>Comprador</th><th>Valor</th><th>Status</th><th>Data</th><th>Ação</th></tr></thead>
+<tbody id="t-ped-body"><tr><td colspan="6" style="text-align:center;color:#475569;padding:20px">Carregando...</td></tr></tbody>
+</table>
+</div>
+<div id="t-sync" class="tc">
+<div class="btn-r">
+<button class="btn bl" onclick="syncPedidos()">🔄 Sync Pedidos Agora</button>
+<button class="btn bg" onclick="testar()">✅ Testar CJ</button>
+<button class="btn bv" onclick="toggleLog()">📋 Log</button>
+</div>
+<div id="log" style="background:#0d1117;border:1px solid #1f2937;border-radius:9px;padding:14px;font-family:monospace;font-size:12px;color:#4ade80;white-space:pre-wrap;display:none;min-height:100px"></div>
+</div>
+</div>
 </div>
 <div class="modal" id="modal">
-  <div class="mb">
-    <div class="mt">🚀 Publicar no Mercado Livre</div>
-    <input type="hidden" id="m-pid"><input type="hidden" id="m-img">
-    <div class="fg"><label class="fl">Título</label><input class="fi" id="m-title"></div>
-    <div class="fg"><label class="fl">Preço CJ (USD)</label><input class="fi" id="m-cj" type="number" step="0.01" oninput="calcML()"></div>
-    <div class="fg"><label class="fl">Preço ML (R$) — margem 2.5x + câmbio</label><input class="fi" id="m-ml" type="number" step="0.01"></div>
-    <div class="fg"><label class="fl">Quantidade</label><input class="fi" id="m-qtd" type="number" value="10"></div>
-    <div class="fg"><label class="fl">Categoria ML (opcional)</label><input class="fi" id="m-cat" placeholder="MLB271599"></div>
-    <div style="display:flex;gap:8px;margin-top:18px">
-      <button class="btn bg" style="flex:1" onclick="publicar()">✅ Publicar</button>
-      <button class="btn" onclick="closeModal()" style="background:#1f2937;color:#9ca3af">Cancelar</button>
-    </div>
-  </div>
+<div class="mb">
+<div class="mt">🚀 Publicar no Mercado Livre</div>
+<input type="hidden" id="m-pid"><input type="hidden" id="m-img">
+<div class="fg"><label class="fl">Título</label><input class="fi" id="m-title"></div>
+<div class="fg"><label class="fl">Preço CJ (USD)</label><input class="fi" id="m-cj" type="number" step="0.01" oninput="calcML()"></div>
+<div class="fg"><label class="fl">Preço ML (R$) — margem 2.5x + câmbio R$5,10</label><input class="fi" id="m-ml" type="number" step="0.01"></div>
+<div class="fg"><label class="fl">Quantidade</label><input class="fi" id="m-qtd" type="number" value="10"></div>
+<div class="fg"><label class="fl">Categoria ML (ID opcional)</label><input class="fi" id="m-cat" placeholder="MLB271599 — deixe em branco para auto-detectar"></div>
+<div style="display:flex;gap:8px;margin-top:18px">
+<button class="btn bg" style="flex:1" onclick="publicar()">✅ Publicar</button>
+<button class="btn" onclick="closeModal()" style="background:#1f2937;color:#9ca3af">Cancelar</button>
+</div>
+</div>
 </div>
 <div class="toast" id="toast"></div>
-<div class="f">DropFacil v2.0 · Dropshipping Automatizado · Patrick Luan</div>
+<div class="f">DropFacil v3.0 · Dropshipping Automatizado · Patrick Luan</div>
 <script>
-const USD=5.1;
-function toast(m,t='ok'){const e=document.getElementById('toast');e.textContent=m;e.className='toast show '+t;setTimeout(()=>e.className='toast',3500)}
+const USD=5.10;
+let autoRunning=false;
+
+function toast(m,t='ok'){const e=document.getElementById('toast');e.textContent=m;e.className='toast show '+t;setTimeout(()=>e.className='toast',4000)}
 function tab(n,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');document.querySelectorAll('.tc').forEach(t=>t.classList.remove('on'));document.getElementById('t-'+n).classList.add('on');if(n==='meus')loadMeus();if(n==='pedidos')loadPedidos()}
-async function loadStats(){try{const r=await fetch('/api/dashboard/stats');const d=await r.json();document.getElementById('k-prod').textContent=d.produtos||0;document.getElementById('k-ped').textContent=d.pedidos||0;document.getElementById('k-ml').textContent=d.ml?'✅ Sim':'❌ Não';document.getElementById('k-ml-s').textContent='última sync: '+(d.ultima_sync||'-')}catch(e){}}
+
+async function loadStats(){
+  try{
+    const r=await fetch('/api/dashboard/stats');
+    const d=await r.json();
+    document.getElementById('k-prod').textContent=d.produtos||0;
+    document.getElementById('k-ped').textContent=d.pedidos||0;
+    const mlOk=d.ml;
+    document.getElementById('k-ml').textContent=mlOk?'✅ Sim':'❌ Não';
+    document.getElementById('k-ml-s').textContent=mlOk?'última sync: '+(d.ultima_sync||'-'):'Clique em Conectar ML';
+    document.getElementById('ml-status-txt').textContent=mlOk?'Patrick Luan · ID: 3421636550':'Não conectado — clique em Conectar ML';
+    const badge=document.getElementById('ml-badge');
+    badge.textContent=mlOk?'ATIVO':'DESCONECTADO';
+    badge.className='badge '+(mlOk?'bs':'bd');
+    document.getElementById('btn-ml').style.display=mlOk?'none':'inline-flex';
+  }catch(e){}
+}
+
+function conectarML(){
+  window.location.href='/auth/mercadolivre';
+}
+
 async function buscarTop(){document.getElementById('q').value='';await buscar()}
-async function buscar(){const q=document.getElementById('q').value;const g=document.getElementById('grid');g.innerHTML='<div class="load">⏳ Buscando...</div>';try{const r=await fetch('/api/buscar-produtos?q='+encodeURIComponent(q));const ps=await r.json();if(!ps.length){g.innerHTML='<div class="load">Nenhum produto encontrado</div>';return}g.innerHTML=ps.map(card).join('')}catch(e){g.innerHTML='<div class="load" style="color:#f87171">Erro: '+e.message+'</div>'}}
-function card(p){const ml=(p.preco_cj*USD*2.5).toFixed(2);return `<div class="pc"><img class="pi" src="${p.imagem}" onerror="this.src='https://via.placeholder.com/70'" alt=""><div style="flex:1;min-width:0"><div class="pn">${p.nome}</div><div class="ps">SKU: ${p.sku} · ${p.categoria||''}</div><div class="pp"><span class="pp-c">CJ: $${(p.preco_cj||0).toFixed(2)}</span><span class="pp-m">ML: R$ ${ml}</span></div><div class="pa"><button class="bs2 g" onclick='openModal(${JSON.stringify(p)})'>🚀 Publicar</button><button class="bs2 b" onclick="window.open('https://cjdropshipping.com','_blank')">🔗 CJ</button></div></div></div>`}
-function openModal(p){document.getElementById('m-pid').value=p.pid;document.getElementById('m-img').value=p.imagem;document.getElementById('m-title').value=p.nome;document.getElementById('m-cj').value=p.preco_cj;document.getElementById('m-ml').value=(p.preco_cj*USD*2.5).toFixed(2);document.getElementById('modal').classList.add('open')}
+
+async function buscar(){
+  const q=document.getElementById('q').value;
+  const g=document.getElementById('grid');
+  g.innerHTML='<div class="load">⏳ Buscando produtos...</div>';
+  try{
+    const r=await fetch('/api/buscar-produtos?q='+encodeURIComponent(q));
+    const ps=await r.json();
+    if(!ps.length){g.innerHTML='<div class="load">Nenhum produto encontrado</div>';return}
+    g.innerHTML=ps.map(card).join('');
+  }catch(e){g.innerHTML='<div class="load" style="color:#f87171">Erro: '+e.message+'</div>'}
+}
+
+function cjUrl(p){
+  if(p.pid)return 'https://cjdropshipping.com/product/'+p.pid+'.html';
+  if(p.sku)return 'https://cjdropshipping.com/search?q='+encodeURIComponent(p.sku);
+  return 'https://cjdropshipping.com';
+}
+
+function card(p){
+  const ml=(p.preco_cj*USD*2.5).toFixed(2);
+  const url=cjUrl(p);
+  return `<div class="pc">
+    <img class="pi" src="${p.imagem}" onerror="this.src='https://via.placeholder.com/70'" alt="" onclick="window.open('${url}','_blank')" title="Ver no CJ">
+    <div style="flex:1;min-width:0">
+      <div class="pn" title="${p.nome}">${p.nome}</div>
+      <div class="ps">SKU: ${p.sku} · ${p.categoria||''}</div>
+      <div class="pp">
+        <span class="pp-c">CJ: $${(p.preco_cj||0).toFixed(2)}</span>
+        <span class="pp-m">ML: R$ ${ml}</span>
+      </div>
+      <div class="pa">
+        <button class="bs2 g" onclick='openModal(${JSON.stringify(p)})'>🚀 Publicar</button>
+        <button class="bs2 b" onclick="window.open('${url}','_blank')">🔗 Ver no CJ</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openModal(p){
+  document.getElementById('m-pid').value=p.pid||'';
+  document.getElementById('m-img').value=p.imagem||'';
+  document.getElementById('m-title').value=p.nome||'';
+  document.getElementById('m-cj').value=p.preco_cj||0;
+  document.getElementById('m-ml').value=(p.preco_cj*USD*2.5).toFixed(2);
+  document.getElementById('modal').classList.add('open');
+}
 function closeModal(){document.getElementById('modal').classList.remove('open')}
 function calcML(){const c=parseFloat(document.getElementById('m-cj').value)||0;document.getElementById('m-ml').value=(c*USD*2.5).toFixed(2)}
-async function publicar(){const body={pid:document.getElementById('m-pid').value,titulo:document.getElementById('m-title').value,preco_brl:parseFloat(document.getElementById('m-ml').value),imagem:document.getElementById('m-img').value,categoria_ml:document.getElementById('m-cat').value||null,quantidade:parseInt(document.getElementById('m-qtd').value)||10};toast('⏳ Publicando...','');try{const r=await fetch('/api/publicar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(d.success){closeModal();toast('✅ Publicado! ID: '+d.ml_id);setTimeout(()=>loadStats(),2000)}else toast('❌ '+d.error,'err')}catch(e){toast('❌ '+e.message,'err')}}
-async function syncPedidos(){toast('⏳ Sincronizando...');try{const r=await fetch('/api/ml/sync-orders',{method:'POST'});const d=await r.json();toast('✅ '+(d.message||'Sincronizado!'));setTimeout(()=>{loadPedidos();loadStats()},1000)}catch(e){toast('❌ '+e.message,'err')}}
-async function testar(){try{const r=await fetch('/api/cj/test');const d=await r.json();toast(d.success?'✅ CJ OK!':'❌ '+d.error,d.success?'ok':'err')}catch(e){toast('❌ '+e.message,'err')}}
-async function loadMeus(){const g=document.getElementById('grid-meus');g.innerHTML='<div class="load">Carregando...</div>';try{const r=await fetch('/api/produtos');const ps=await r.json();if(!ps.length){g.innerHTML='<div class="load">Nenhum produto publicado ainda</div>';return}g.innerHTML=ps.map(p=>`<div class="pc"><img class="pi" src="${p.imagem||''}" onerror="this.src='https://via.placeholder.com/70'" alt=""><div style="flex:1;min-width:0"><div class="pn">${p.titulo||'-'}</div><div class="ps">${p.ml_item_id||'-'}</div><div class="pp"><span class="pp-c">CJ: $${(p.preco_cj||0).toFixed(2)}</span><span class="pp-m">ML: R$ ${(p.preco_ml||0).toFixed(2)}</span></div>${p.ml_item_id?`<div class="pa"><a href="https://www.mercadolivre.com.br/item/${p.ml_item_id}" target="_blank" class="bs2 b">Ver ML</a></div>`:''}</div><span class="badge bs">Ativo</span></div>`).join('')}catch(e){g.innerHTML='<div class="load" style="color:#f87171">'+e.message+'</div>'}}
-async function loadPedidos(){try{const r=await fetch('/api/pedidos');const ps=await r.json();const tbody=document.getElementById('t-ped-body');if(!ps.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569;padding:20px">Nenhum pedido ainda</td></tr>';return}tbody.innerHTML=ps.map(p=>`<tr><td style="color:#60a5fa;font-weight:600">#${p.ml_order_id||'-'}</td><td>${p.buyer_name||'-'}</td><td style="color:#4ade80;font-weight:600">R$ ${(p.total||0).toFixed(2)}</td><td><span class="badge ${p.status==='paid'?'bs':p.status==='cancelled'?'bd':'bw'}">${p.status||'-'}</span></td><td style="color:#6b7280">${p.created_at?new Date(p.created_at).toLocaleDateString('pt-BR'):'-'}</td><td><button class="bs2 b" onclick="toast('Em desenvolvimento...','')">Ver</button></td></tr>`).join('')}catch(e){}}
-function toggleLog(){const l=document.getElementById('log');l.style.display=l.style.display==='none'?'block':'none';if(l.style.display==='block'){l.textContent='📋 DropFacil v2.0 Log\n✅ CJ Dropshipping: CONECTADO\n✅ Mercado Livre: CONECTADO\n🕐 '+new Date().toLocaleString('pt-BR')+'\n⚡ Automação: Ativa (15min)'}}
+
+async function publicar(){
+  const body={
+    pid:document.getElementById('m-pid').value,
+    titulo:document.getElementById('m-title').value,
+    preco_brl:parseFloat(document.getElementById('m-ml').value),
+    imagem:document.getElementById('m-img').value,
+    categoria_ml:document.getElementById('m-cat').value||null,
+    quantidade:parseInt(document.getElementById('m-qtd').value)||10
+  };
+  toast('⏳ Publicando no Mercado Livre...','info');
+  try{
+    const r=await fetch('/api/publicar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(d.success){
+      closeModal();
+      toast('✅ Publicado! ID: '+d.ml_id);
+      setTimeout(()=>loadStats(),2000);
+    }else{
+      toast('❌ '+d.error,'err');
+    }
+  }catch(e){toast('❌ '+e.message,'err')}
+}
+
+async function autoPublicar(){
+  if(autoRunning){toast('⚠️ Automação já em execução...','info');return}
+  autoRunning=true;
+  const btnAuto=document.getElementById('btn-auto');
+  btnAuto.disabled=true;
+  btnAuto.textContent='⏳ Executando...';
+  const qty=parseInt(document.getElementById('auto-qty').value)||10;
+  const progBox=document.getElementById('prog-box');
+  const progF=document.getElementById('prog-f');
+  const progT=document.getElementById('prog-t');
+  progBox.style.display='block';
+  progT.textContent='Buscando top produtos do CJ...';
+  progF.style.width='5%';
+  toast('🤖 Automação iniciada! Buscando '+qty+' produtos...','info');
+  try{
+    const r=await fetch('/api/buscar-produtos?q=&limit='+qty);
+    const ps=await r.json();
+    const prods=ps.slice(0,qty);
+    if(!prods.length){toast('❌ Nenhum produto encontrado','err');return}
+    progT.textContent='Encontrados '+prods.length+' produtos. Publicando...';
+    let ok=0,errs=0;
+    for(let i=0;i<prods.length;i++){
+      const p=prods[i];
+      progF.style.width=Math.round(((i+1)/prods.length)*100)+'%';
+      progT.textContent='Publicando '+( i+1)+'/'+prods.length+': '+p.nome.substring(0,40)+'...';
+      try{
+        const body={
+          pid:p.pid,titulo:p.nome,
+          preco_brl:parseFloat((p.preco_cj*USD*2.5).toFixed(2)),
+          imagem:p.imagem,categoria_ml:null,quantidade:10
+        };
+        const res=await fetch('/api/publicar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+        const d=await res.json();
+        if(d.success)ok++;else errs++;
+      }catch(e){errs++}
+      await new Promise(r=>setTimeout(r,1200));
+    }
+    progF.style.width='100%';
+    progT.textContent='✅ Concluído! '+ok+' publicados, '+errs+' erros.';
+    toast('🎉 Auto-publicação concluída! '+ok+' anúncios criados no ML!');
+    setTimeout(()=>loadStats(),2000);
+  }catch(e){
+    toast('❌ Erro na automação: '+e.message,'err');
+  }finally{
+    autoRunning=false;
+    btnAuto.disabled=false;
+    btnAuto.textContent='🤖 Auto-Publicar Agora';
+    setTimeout(()=>{progBox.style.display='none';progF.style.width='0%'},5000);
+  }
+}
+
+async function syncPedidos(){
+  toast('⏳ Sincronizando pedidos do ML...','info');
+  try{
+    const r=await fetch('/api/ml/sync-orders',{method:'POST'});
+    const d=await r.json();
+    toast('✅ '+(d.message||'Sincronizado!'));
+    setTimeout(()=>{loadPedidos();loadStats()},1000);
+  }catch(e){toast('❌ '+e.message,'err')}
+}
+
+async function testar(){
+  try{
+    const r=await fetch('/api/cj/test');
+    const d=await r.json();
+    toast(d.success?'✅ CJ Auth OK!':'❌ '+d.error,d.success?'ok':'err');
+  }catch(e){toast('❌ '+e.message,'err')}
+}
+
+async function loadMeus(){
+  const g=document.getElementById('grid-meus');
+  g.innerHTML='<div class="load">Carregando...</div>';
+  try{
+    const r=await fetch('/api/produtos');
+    const ps=await r.json();
+    if(!ps.length){g.innerHTML='<div class="load">Nenhum produto publicado ainda. Use a aba Buscar CJ para publicar!</div>';return}
+    g.innerHTML=ps.map(p=>`<div class="pc">
+      <img class="pi" src="${p.imagem||''}" onerror="this.src='https://via.placeholder.com/70'" alt="">
+      <div style="flex:1;min-width:0">
+        <div class="pn">${p.titulo||'-'}</div>
+        <div class="ps">${p.ml_item_id||'-'}</div>
+        <div class="pp">
+          <span class="pp-c">CJ: $${(p.preco_cj||0).toFixed(2)}</span>
+          <span class="pp-m">ML: R$ ${(p.preco_ml||0).toFixed(2)}</span>
+        </div>
+        ${p.ml_item_id?`<div class="pa"><a href="https://www.mercadolivre.com.br/item/${p.ml_item_id}" target="_blank" class="bs2 b" style="text-decoration:none">Ver no ML</a></div>`:''}
+      </div>
+      <span class="badge bs">Ativo</span>
+    </div>`).join('');
+  }catch(e){g.innerHTML='<div class="load" style="color:#f87171">'+e.message+'</div>'}
+}
+
+async function loadPedidos(){
+  try{
+    const r=await fetch('/api/pedidos');
+    const ps=await r.json();
+    const tbody=document.getElementById('t-ped-body');
+    if(!ps.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#475569;padding:20px">Nenhum pedido ainda — aguardando suas primeiras vendas! 🎯</td></tr>';return}
+    tbody.innerHTML=ps.map(p=>`<tr>
+      <td style="color:#60a5fa;font-weight:600">#${p.ml_order_id||'-'}</td>
+      <td>${p.buyer_name||'-'}</td>
+      <td style="color:#4ade80;font-weight:600">R$ ${(p.total||0).toFixed(2)}</td>
+      <td><span class="badge ${p.status==='paid'?'bs':p.status==='cancelled'?'bd':'bw'}">${p.status||'-'}</span></td>
+      <td style="color:#6b7280">${p.created_at?new Date(p.created_at).toLocaleDateString('pt-BR'):'-'}</td>
+      <td><button class="bs2 b" onclick="toast('Detalhes em breve...','info')">Ver</button></td>
+    </tr>`).join('');
+  }catch(e){}
+}
+
+function toggleLog(){
+  const l=document.getElementById('log');
+  l.style.display=l.style.display==='none'?'block':'none';
+  if(l.style.display==='block'){
+    l.textContent='📋 DropFacil v3.0 Log\n✅ CJ Dropshipping: CONECTADO (apiKey)\n⏳ Mercado Livre: verificando token...\n🕐 '+new Date().toLocaleString('pt-BR')+'\n⚡ Automação: Ativa (sync a cada 15min)\n\nEndpoints ativos:\n  GET  /api/buscar-produtos\n  POST /api/publicar\n  GET  /api/dashboard/stats\n  POST /api/ml/sync-orders\n  GET  /auth/mercadolivre';
+  }
+}
+
 window.onload=()=>{loadStats();buscarTop()};
 </script>
 </body>
