@@ -6,17 +6,17 @@
 <title>DropFacil - Dashboard</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0f1e;color:#e2e8f0;min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;background:#0a0f1e;color:#e2e8f0;min-height:100vh}
 .header{background:linear-gradient(135deg,#1e3a8a,#6d28d9);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 24px rgba(0,0,0,.4);flex-wrap:wrap;gap:8px}
 .logo{font-size:22px;font-weight:900;color:#fff}.logo span{color:#fbbf24}
-.hbtns{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.hbtns{display:flex;align-items:center;gap:8px}
 .pill{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:4px 14px;font-size:12px;color:#fff;display:flex;align-items:center;gap:6px}
 .dot{width:7px;height:7px;border-radius:50%;background:#4ade80;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .wrap{max-width:1380px;margin:0 auto;padding:20px}
 .grid5{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
-.kpi{background:#111827;border:1px solid #1f2937;border-radius:12px;padding:16px;position:relative;overflow:hidden;cursor:default}
-.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.kpi{background:#111827;border:1px solid #1f2937;border-radius:12px;padding:16px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
 .kpi.b::before{background:linear-gradient(90deg,#3b82f6,#93c5fd)}
 .kpi.g::before{background:linear-gradient(90deg,#10b981,#6ee7b7)}
 .kpi.a::before{background:linear-gradient(90deg,#f59e0b,#fcd34d)}
@@ -30,9 +30,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .int-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
 .int{background:#0d1117;border:1px solid #1f2937;border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px}
 .int-i{width:38px;height:38px;border-radius:8px;background:#ffffff10;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.int-n{font-size:12px;font-weight:700;color:#f1f5f9}
-.int-s{font-size:10px;color:#6b7280;margin-top:1px}
-.badge{padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase;white-space:nowrap}
+.int-n{font-size:12px;font-weight:700;color:#f1f5f9}.int-s{font-size:10px;color:#6b7280;margin-top:1px}
+.badge{padding:3px 9px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase}
 .bs{background:#052e16;color:#4ade80;border:1px solid #166534}
 .bw{background:#451a03;color:#fbbf24;border:1px solid #92400e}
 .bd{background:#450a0a;color:#f87171;border:1px solid #991b1b}
@@ -43,69 +42,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tc{display:none}.tc.on{display:block}
 .sb{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
 .si{flex:1;min-width:180px;background:#0d1117;border:1px solid #374151;border-radius:9px;padding:9px 14px;color:#f1f5f9;font-size:13px;outline:none}
-.si:focus{border-color:#3b82f6}
-.si::placeholder{color:#6b7280}
+.si:focus{border-color:#3b82f6}.si::placeholder{color:#6b7280}
 .btn{padding:9px 16px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .18s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 .bl{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff}
 .bl:hover{box-shadow:0 5px 18px rgba(37,99,235,.4);transform:translateY(-1px)}
 .bg{background:linear-gradient(135deg,#059669,#047857);color:#fff}
 .bg:hover{box-shadow:0 5px 18px rgba(5,150,105,.4);transform:translateY(-1px)}
 .ba{background:linear-gradient(135deg,#d97706,#b45309);color:#fff}
-.ba:hover{box-shadow:0 5px 18px rgba(217,119,6,.4);transform:translateY(-1px)}
 .bv{background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff}
 .bv:hover{box-shadow:0 5px 18px rgba(124,58,237,.4);transform:translateY(-1px)}
 .br2{background:linear-gradient(135deg,#ec4899,#be185d);color:#fff}
-.br2:hover{box-shadow:0 5px 18px rgba(236,72,153,.4);transform:translateY(-1px)}
-.btn:disabled{opacity:.5;cursor:not-allowed!important;transform:none!important;box-shadow:none!important}
+.btn:disabled{opacity:.5;cursor:not-allowed!important;transform:none!important}
 .btn-r{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
 .pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
-.pc{background:#0d1117;border:1px solid #1f2937;border-radius:11px;padding:12px;display:flex;gap:10px;transition:all .2s;position:relative}
+.pc{background:#0d1117;border:1px solid #1f2937;border-radius:11px;padding:12px;display:flex;gap:10px;transition:all .2s;cursor:pointer}
 .pc:hover{border-color:#374151;transform:translateY(-1px)}
-.pc.selected{border-color:#7c3aed;background:#120d1f}
-.pc-check{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;border:2px solid #374151;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
-.pc-check.on{background:#7c3aed;border-color:#7c3aed;color:#fff}
-.pi{width:68px;height:68px;object-fit:cover;border-radius:8px;flex-shrink:0;cursor:pointer;transition:transform .2s}
-.pi:hover{transform:scale(1.08)}
-.pn{font-size:12px;font-weight:600;color:#f1f5f9;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.4}
-.ps{font-size:10px;color:#6b7280;margin-top:2px}
+.pi{width:68px;height:68px;object-fit:cover;border-radius:8px;flex-shrink:0}
+.pn{font-size:12px;font-weight:600;color:#f1f5f9;overflow:hidden;line-height:1.4;margin-bottom:2px}
+.ps{font-size:10px;color:#6b7280}
 .pp{display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap}
-.pp-c{font-size:11px;color:#6b7280}
-.pp-m{font-size:13px;font-weight:700;color:#4ade80}
-.pp-lucro{font-size:10px;color:#fbbf24;background:#451a03;border-radius:4px;padding:1px 5px}
+.pp-c{font-size:11px;color:#6b7280}.pp-m{font-size:13px;font-weight:700;color:#4ade80}
+.pp-lucro{font-size:10px;border-radius:4px;padding:1px 6px;font-weight:700}
 .pa{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
-.bs2{padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all .15s}
-.bs2.g{background:#052e16;color:#4ade80}.bs2.g:hover{background:#064e22}
-.bs2.b{background:#1e3a8a;color:#93c5fd}.bs2.b:hover{background:#243fb5}
-.bs2.a{background:#451a03;color:#fbbf24}.bs2.a:hover{background:#5c2404}
-.bs2.v{background:#1e1b4b;color:#a78bfa}.bs2.v:hover{background:#2d2875}
+.bs2{padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:none}
+.bs2.g{background:#052e16;color:#4ade80}.bs2.b{background:#1e3a8a;color:#93c5fd}.bs2.v{background:#1e1b4b;color:#a78bfa}
 table{width:100%;border-collapse:collapse}
 th{text-align:left;padding:9px 12px;font-size:10px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #1f2937}
 td{padding:10px 12px;font-size:12px;border-bottom:1px solid #0d1117}
 tr:hover td{background:#0d1117}
 .load{color:#6b7280;text-align:center;padding:36px;font-size:13px}
-.toast{position:fixed;bottom:24px;right:24px;background:#111827;border:1px solid #1f2937;border-radius:10px;padding:12px 18px;font-size:12px;color:#f1f5f9;z-index:9999;transform:translateY(120px);transition:transform .3s;box-shadow:0 8px 28px rgba(0,0,0,.5);max-width:380px;line-height:1.5}
-.toast.show{transform:translateY(0)}
-.toast.ok{border-color:#166534;color:#4ade80}
-.toast.err{border-color:#991b1b;color:#f87171}
-.toast.info{border-color:#1e3a8a;color:#93c5fd}
+.toast{position:fixed;bottom:24px;right:24px;background:#111827;border:1px solid #1f2937;border-radius:10px;padding:12px 18px;font-size:12px;color:#f1f5f9;z-index:9999;transform:translateY(120px);transition:transform .3s;box-shadow:0 8px 28px rgba(0,0,0,.5);max-width:380px}
+.toast.show{transform:translateY(0)}.toast.ok{border-color:#166534;color:#4ade80}
+.toast.err{border-color:#991b1b;color:#f87171}.toast.info{border-color:#1e3a8a;color:#93c5fd}
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center;padding:16px}
 .modal.open{display:flex}
 .mb{background:#111827;border:1px solid #1f2937;border-radius:14px;padding:24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
 .mt{font-size:16px;font-weight:700;color:#f1f5f9;margin-bottom:18px}
-.fg{margin-bottom:12px}
-.fl{font-size:11px;color:#9ca3af;margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.6px}
+.fg{margin-bottom:12px}.fl{font-size:11px;color:#9ca3af;margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.6px}
 .fi{width:100%;background:#0d1117;border:1px solid #374151;border-radius:7px;padding:9px 12px;color:#f1f5f9;font-size:13px;outline:none}
 .fi:focus{border-color:#3b82f6}
 .margem-box{background:#0d1117;border:1px solid #1f2937;border-radius:10px;padding:14px;margin:14px 0}
 .margem-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px}
 .margem-row.total{border-top:1px solid #1f2937;margin-top:8px;padding-top:10px;font-weight:700;font-size:14px}
-.margem-neg{color:#f87171}
-.margem-pos{color:#4ade80}
-.margem-neu{color:#9ca3af}
-.trend-header{background:#0d1117;border:1px solid #374151;border-radius:10px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
-.trend-src{display:flex;gap:6px;flex-wrap:wrap}
-.trend-tag{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid #374151;color:#6b7280;background:transparent;transition:all .15s}
-.trend-tag.on{background:#1f2937;color:#f1f5f9;border-color:#4b5563}
+.marg-neg{color:#f87171}.marg-pos{color:#4ade80}.marg-neu{color:#9ca3af}
 .auto-banner{background:linear-gradient(135deg,#1a0533,#0d2240);border:1px solid #4c1d95;border-radius:12px;padding:16px 20px;margin-bottom:14px}
 .auto-banner-t{font-size:14px;font-weight:700;color:#c4b5fd;margin-bottom:4px}
 .auto-banner-s{font-size:11px;color:#7c3aed}
@@ -114,8 +93,6 @@ tr:hover td{background:#0d1117}
 .prog-b{height:6px;background:#1f2937;border-radius:3px;overflow:hidden;margin-bottom:8px}
 .prog-f{height:100%;background:linear-gradient(90deg,#7c3aed,#4ade80);border-radius:3px;transition:width .5s ease}
 .prog-t{font-size:11px;color:#9ca3af;text-align:center}
-.sel-bar{background:#1e1b4b;border:1px solid #4c1d95;border-radius:8px;padding:10px 14px;margin-bottom:10px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12px;color:#c4b5fd}
-.sel-bar.show{display:flex}
 .f{text-align:center;padding:14px;color:#374151;font-size:11px}
 </style>
 </head><body>
@@ -124,601 +101,281 @@ tr:hover td{background:#0d1117}
 <div class="hbtns">
 <button class="btn bg" onclick="conectarML()" id="btn-ml" style="font-size:11px;padding:6px 12px;display:none">🔗 Conectar ML</button>
 <div class="pill"><span class="dot"></span>Sistema Online</div>
-</div>
-</div>
+</div></div>
 <div class="wrap">
-
-<!-- KPIs: 5 cards -->
 <div class="grid5">
 <div class="kpi b"><div class="kpi-l">Produtos Ativos</div><div class="kpi-v" id="k-prod">0</div><div class="kpi-s">no Mercado Livre</div></div>
 <div class="kpi g"><div class="kpi-l">Pedidos Totais</div><div class="kpi-v" id="k-ped">0</div><div class="kpi-s">sincronizados</div></div>
 <div class="kpi a"><div class="kpi-l">ML Conectado</div><div class="kpi-v" id="k-ml" style="font-size:22px">...</div><div class="kpi-s" id="k-ml-s">-</div></div>
-<div class="kpi r"><div class="kpi-l">Shopee</div><div class="kpi-v" id="k-shopee" style="font-size:22px">⏳</div><div class="kpi-s" id="k-shopee-s">Em aprovação</div></div>
-<div class="kpi v"><div class="kpi-l">Automação</div><div class="kpi-v" style="font-size:22px">⚡</div><div class="kpi-s">sync a cada 15 min</div></div>
+<div class="kpi r"><div class="kpi-l">Shopee</div><div class="kpi-v" id="k-shopee" style="font-size:22px">⏳</div><div class="kpi-s">Em aprovação</div></div>
+<div class="kpi v"><div class="kpi-l">Automação</div><div class="kpi-v" style="font-size:22px">⚡</div><div class="kpi-s">sync 15 min</div></div>
 </div>
-
-<!-- Integrações -->
 <div class="box">
 <div class="box-t">🔗 Integrações</div>
 <div class="int-g">
 <div class="int"><div class="int-i">🛍️</div><div><div class="int-n">Mercado Livre</div><div class="int-s" id="ml-status-txt">Verificando...</div></div><span class="badge" id="ml-badge">...</span></div>
 <div class="int"><div class="int-i">📦</div><div><div class="int-n">CJ Dropshipping</div><div class="int-s">CJ5445478 · pklalmeida@hotmail.com</div></div><span class="badge bs">ATIVO</span></div>
-<div class="int"><div class="int-i">🍊</div><div><div class="int-n">Shopee</div><div class="int-s">techdropbrasil · aguardando aprovação</div></div><span class="badge bp">AGUARDANDO</span></div>
+<div class="int"><div class="int-i">🍊</div><div><div class="int-n">Shopee</div><div class="int-s">techdropbrasil · em aprovação</div></div><span class="badge bp">AGUARDANDO</span></div>
 <div class="int"><div class="int-i">🏦</div><div><div class="int-n">Nubank / Mercado Pago</div><div class="int-s">Conta vinculada via Shopee</div></div><span class="badge bw">PENDENTE</span></div>
-</div>
-</div>
-
-<!-- Tabs -->
+</div></div>
 <div class="box">
 <div class="tabs">
-<button class="tab on" onclick="tab('buscar',this)">🔍 Buscar & Tendências</button>
+<button class="tab on" onclick="tab('buscar',this)">🔍 Buscar</button>
 <button class="tab" onclick="tab('meus',this)">📋 Meus Produtos</button>
 <button class="tab" onclick="tab('pedidos',this)">📦 Pedidos</button>
-<button class="tab" onclick="tab('sync',this)">🔄 Sync & Logs</button>
+<button class="tab" onclick="tab('sync',this)">🔄 Sync</button>
 </div>
-
-<!-- TAB BUSCAR -->
 <div id="t-buscar" class="tc on">
-  <!-- Auto-publicar banner -->
-  <div class="auto-banner">
-    <div class="auto-banner-t">🤖 Automação Inteligente — Publicar Top Produtos</div>
-    <div class="auto-banner-s">Busca os mais vendidos, mostra a lista para sua aprovação, otimiza títulos e publica no ML automaticamente</div>
-    <div class="auto-controls">
-      <select class="fi" id="auto-qty" style="width:auto;padding:7px 10px;font-size:12px">
-        <option value="5">Top 5</option>
-        <option value="10" selected>Top 10</option>
-        <option value="20">Top 20</option>
-      </select>
-      <select class="fi" id="auto-src" style="width:auto;padding:7px 10px;font-size:12px">
-        <option value="cj">Mais vendidos CJ</option>
-        <option value="trend">Tendências ML + CJ</option>
-      </select>
-      <button class="btn bv" onclick="autoPreview()" id="btn-auto-prev">🔍 Ver Lista Antes de Publicar</button>
-      <button class="btn br2" onclick="autoPublicarDireto()" id="btn-auto">⚡ Publicar Direto (sem revisar)</button>
-    </div>
-    <div class="prog" id="prog-box">
-      <div class="prog-b"><div class="prog-f" id="prog-f" style="width:0%"></div></div>
-      <div class="prog-t" id="prog-t">Preparando...</div>
-    </div>
-  </div>
-
-  <!-- Fontes de tendências -->
-  <div class="trend-header">
-    <span style="font-size:12px;color:#9ca3af;font-weight:600">📊 Fonte de pesquisa:</span>
-    <div class="trend-src">
-      <button class="trend-tag on" onclick="toggleSrc(this,'cj')" data-src="cj">📦 CJ Mais Vendidos</button>
-      <button class="trend-tag on" onclick="toggleSrc(this,'ml')" data-src="ml">🛍️ ML Tendências</button>
-      <button class="trend-tag" onclick="toggleSrc(this,'shopee')" data-src="shopee">🍊 Shopee Trends</button>
-      <button class="trend-tag" onclick="toggleSrc(this,'tiktok')" data-src="tiktok">🎵 TikTok Shop</button>
-    </div>
-    <button class="btn bl" style="font-size:11px;padding:6px 12px" onclick="buscarTendencias()">🔄 Atualizar Tendências</button>
-  </div>
-
-  <!-- Barra de busca manual -->
-  <div class="sb">
-    <input class="si" id="q" placeholder="Ou busque manualmente: earrings, pet, phone case..." onkeydown="if(event.key==='Enter')buscar()">
-    <button class="btn bl" onclick="buscar()">🔍 Buscar</button>
-    <button class="btn ba" onclick="buscarTop()">🔥 Mais Vendidos CJ</button>
-  </div>
-
-  <!-- Barra de seleção múltipla -->
-  <div class="sel-bar" id="sel-bar">
-    <span id="sel-count">0 produtos selecionados</span>
-    <div style="display:flex;gap:6px">
-      <button class="btn bg" style="font-size:11px;padding:6px 12px" onclick="publicarSelecionados()">✅ Publicar Selecionados no ML</button>
-      <button class="btn" style="background:#1f2937;color:#9ca3af;font-size:11px;padding:6px 12px" onclick="limparSelecao()">✖ Limpar</button>
-    </div>
-  </div>
-
-  <div class="pg" id="grid"><div class="load">⏳ Carregando tendências...</div></div>
+<div class="auto-banner">
+<div class="auto-banner-t">🤖 Automação — Publicar Top Produtos no ML</div>
+<div class="auto-banner-s">Busca os mais vendidos, mostra a lista para revisão, otimiza títulos e publica automaticamente</div>
+<div class="auto-controls">
+<select class="fi" id="auto-qty" style="width:auto;padding:7px 10px;font-size:12px">
+<option value="5">Top 5</option><option value="10" selected>Top 10</option><option value="20">Top 20</option>
+</select>
+<button class="btn bv" onclick="autoPreview()" id="btn-auto-prev">🔍 Ver Lista Antes de Publicar</button>
+<button class="btn br2" onclick="autoPublicarDireto()" id="btn-auto">⚡ Publicar Direto</button>
 </div>
-
-<!-- TAB MEUS PRODUTOS -->
+<div class="prog" id="prog-box">
+<div class="prog-b"><div class="prog-f" id="prog-f" style="width:0%"></div></div>
+<div class="prog-t" id="prog-t">Preparando...</div>
+</div></div>
+<div class="sb">
+<input class="si" id="q" placeholder="Buscar: earrings, pet, phone case, led..." onkeydown="if(event.key==='Enter')buscar()">
+<button class="btn bl" onclick="buscar()">🔍 Buscar</button>
+<button class="btn ba" onclick="buscarTop()">🔥 Mais Vendidos</button>
+</div>
+<div class="pg" id="grid"><div class="load">⏳ Carregando produtos...</div></div>
+</div>
 <div id="t-meus" class="tc">
-<div class="btn-r">
-<button class="btn ba" onclick="syncPedidos()">🔄 Sincronizar Pedidos ML</button>
-<button class="btn bv" onclick="testar()">🧪 Testar Auth CJ</button>
+<div class="btn-r"><button class="btn ba" onclick="syncPedidos()">🔄 Sync Pedidos ML</button><button class="btn bv" onclick="testar()">🧪 Testar CJ</button></div>
+<div class="pg" id="grid-meus"><div class="load">Carregando...</div></div>
 </div>
-<div class="pg" id="grid-meus"><div class="load">Carregando produtos publicados...</div></div>
-</div>
-
-<!-- TAB PEDIDOS -->
 <div id="t-pedidos" class="tc">
-<div class="btn-r">
-<button class="btn ba" onclick="syncPedidos()">🔄 Sincronizar Pedidos do ML</button>
+<div class="btn-r"><button class="btn ba" onclick="syncPedidos()">🔄 Sincronizar Pedidos ML</button></div>
+<table><thead><tr><th>Pedido</th><th>Comprador</th><th>Valor</th><th>Lucro Est.</th><th>Status</th><th>Data</th><th>Ação</th></tr></thead>
+<tbody id="t-ped-body"><tr><td colspan="7" style="text-align:center;color:#475569;padding:20px">Carregando...</td></tr></tbody></table>
 </div>
-<table>
-<thead><tr><th>Pedido</th><th>Comprador</th><th>Valor</th><th>Lucro Est.</th><th>Status</th><th>Data</th><th>Ação</th></tr></thead>
-<tbody id="t-ped-body"><tr><td colspan="7" style="text-align:center;color:#475569;padding:20px">Carregando...</td></tr></tbody>
-</table>
-</div>
-
-<!-- TAB SYNC -->
 <div id="t-sync" class="tc">
-<div class="btn-r">
-<button class="btn bl" onclick="syncPedidos()">🔄 Sync Pedidos Agora</button>
-<button class="btn bg" onclick="testar()">✅ Testar CJ</button>
-<button class="btn bv" onclick="toggleLog()">📋 Ver Log</button>
+<div class="btn-r"><button class="btn bl" onclick="syncPedidos()">🔄 Sync Agora</button><button class="btn bg" onclick="testar()">✅ Testar CJ</button><button class="btn bv" onclick="toggleLog()">📋 Log</button></div>
+<div id="log" style="background:#0d1117;border:1px solid #1f2937;border-radius:9px;padding:14px;font-family:monospace;font-size:11px;color:#4ade80;white-space:pre-wrap;display:none;min-height:100px;max-height:400px;overflow-y:auto"></div>
 </div>
-<div id="log" style="background:#0d1117;border:1px solid #1f2937;border-radius:9px;padding:14px;font-family:monospace;font-size:11px;color:#4ade80;white-space:pre-wrap;display:none;min-height:120px;max-height:400px;overflow-y:auto"></div>
-</div>
-
-</div><!-- /box -->
-</div><!-- /wrap -->
-<!-- Modal publicar -->
-<div class="modal" id="modal">
+</div></div><div class="modal" id="modal">
 <div class="mb">
 <div class="mt">🚀 Publicar no Mercado Livre</div>
 <input type="hidden" id="m-pid"><input type="hidden" id="m-img">
-<div class="fg"><label class="fl">Título (otimizado automaticamente)</label><input class="fi" id="m-title"></div>
-<div class="fg"><label class="fl">Imagem URL</label><input class="fi" id="m-img-url" placeholder="URL da imagem principal"></div>
+<div class="fg"><label class="fl">Título (auto-otimizado)</label><input class="fi" id="m-title"></div>
 <div class="fg"><label class="fl">Preço CJ (USD)</label><input class="fi" id="m-cj" type="number" step="0.01" oninput="calcTudo()"></div>
-
-<!-- Calculadora de margem -->
-<div class="margem-box" id="margem-box">
-  <div style="font-size:11px;color:#9ca3af;margin-bottom:8px;font-weight:700;text-transform:uppercase;letter-spacing:.6px">💰 Calculadora de Margem Real</div>
-  <div class="margem-row"><span class="margem-neu">Preço CJ (USD→BRL)</span><span id="mg-cj-brl" class="margem-neu">R$ 0,00</span></div>
-  <div class="margem-row"><span class="margem-neu">Frete CJ estimado</span><span class="margem-neg">-R$ 8,00</span></div>
-  <div class="margem-row"><span class="margem-neu">Taxa ML (12%)</span><span id="mg-taxa-ml" class="margem-neg">-R$ 0,00</span></div>
-  <div class="margem-row"><span class="margem-neu">Imposto simples (6%)</span><span id="mg-imposto" class="margem-neg">-R$ 0,00</span></div>
-  <div class="margem-row total"><span>Você recebe limpo:</span><span id="mg-lucro" class="margem-pos">R$ 0,00</span></div>
-  <div class="margem-row"><span style="font-size:11px;color:#6b7280">Margem %</span><span id="mg-pct" style="font-size:11px;color:#fbbf24">0%</span></div>
+<div class="margem-box">
+<div style="font-size:11px;color:#9ca3af;margin-bottom:8px;font-weight:700;text-transform:uppercase">💰 Calculadora de Margem Real</div>
+<div class="margem-row"><span class="marg-neu">Preço CJ (USD→BRL)</span><span id="mg-cj-brl" class="marg-neu">R$ 0,00</span></div>
+<div class="margem-row"><span class="marg-neu">Frete CJ estimado</span><span class="marg-neg">-R$ 8,00</span></div>
+<div class="margem-row"><span class="marg-neu">Taxa ML (12%)</span><span id="mg-taxa-ml" class="marg-neg">-R$ 0,00</span></div>
+<div class="margem-row"><span class="marg-neu">Imposto (6%)</span><span id="mg-imposto" class="marg-neg">-R$ 0,00</span></div>
+<div class="margem-row total"><span>Você recebe:</span><span id="mg-lucro" class="marg-pos">R$ 0,00</span></div>
+<div class="margem-row"><span style="font-size:11px;color:#6b7280">Margem</span><span id="mg-pct" style="font-size:11px;color:#fbbf24">0%</span></div>
 </div>
-
-<div class="fg"><label class="fl">Preço ML (R$) — ajuste se quiser</label><input class="fi" id="m-ml" type="number" step="0.01" oninput="calcTudo()"></div>
+<div class="fg"><label class="fl">Preço ML (R$) — edite se quiser</label><input class="fi" id="m-ml" type="number" step="0.01" oninput="calcTudo()"></div>
 <div class="fg"><label class="fl">Quantidade</label><input class="fi" id="m-qtd" type="number" value="10"></div>
-<div class="fg"><label class="fl">Categoria ML ID (opcional)</label><input class="fi" id="m-cat" placeholder="deixe em branco para auto-detectar"></div>
-<div style="background:#052e16;border-radius:8px;padding:10px;margin:10px 0;font-size:11px;color:#4ade80" id="m-otimizado" style="display:none"></div>
+<div class="fg"><label class="fl">Categoria ML (opcional)</label><input class="fi" id="m-cat" placeholder="MLB271599 — deixe em branco"></div>
+<div id="m-ot" style="background:#052e16;border-radius:8px;padding:8px;margin:8px 0;font-size:11px;color:#4ade80;display:none">✅ Título otimizado para PT-BR!</div>
 <div style="display:flex;gap:8px;margin-top:16px">
 <button class="btn bg" style="flex:1" onclick="publicar()">✅ Publicar Agora</button>
 <button class="btn" onclick="closeModal()" style="background:#1f2937;color:#9ca3af">Cancelar</button>
-</div>
-</div>
-</div>
-
-<!-- Modal de preview auto-publicar -->
+</div></div></div>
 <div class="modal" id="modal-preview">
-<div class="mb" style="max-width:900px;width:100%">
-<div class="mt">🔍 Revisão — Produtos para Publicar</div>
-<div style="font-size:12px;color:#9ca3af;margin-bottom:16px">Revise a lista abaixo. Desmarque produtos que não quer publicar. Clique em Confirmar para publicar todos os marcados.</div>
-<div class="pg" id="preview-grid" style="max-height:55vh;overflow-y:auto;padding:4px"></div>
-<div style="margin-top:16px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-<button class="btn bg" style="flex:1" onclick="confirmarAutoPublicar()" id="btn-confirmar">✅ Confirmar e Publicar Todos</button>
+<div class="mb" style="max-width:860px;width:100%">
+<div class="mt">🔍 Revisão — Confirme os produtos</div>
+<div style="font-size:12px;color:#9ca3af;margin-bottom:12px">Clique em produtos para desmarcar. Tudo marcado será publicado.</div>
+<div class="pg" id="preview-grid" style="max-height:50vh;overflow-y:auto"></div>
+<div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn bg" style="flex:1" id="btn-confirmar" onclick="confirmarAutoPublicar()">✅ Publicar Tudo</button>
 <button class="btn" onclick="document.getElementById('modal-preview').classList.remove('open')" style="background:#1f2937;color:#9ca3af">Cancelar</button>
-</div>
-</div>
-</div>
-
+</div></div></div>
 <div class="toast" id="toast"></div>
-<div class="f">DropFacil v4.0 · Automação Total · Patrick Luan</div>
-<script>
-const USD = 5.10;
-const TAXA_ML = 0.12;
-const IMPOSTO = 0.06;
-const FRETE_CJ = 8.0;
-let autoRunning = false;
-let produtosPreview = [];
-let srcsAtivas = new Set(['cj','ml']);
-let selecao = new Set();
+<div class="f">DropFacil v4.0 · Patrick Luan</div><script>
+const USD=5.10,TAXA=0.12,IMP=0.06,FRETE=8;
+let autoRun=false, prvProds=[], prvDel=new Set();
+window._prods=[];
 
-// ---- UTILS ----
-function toast(m, t='ok') {
-  const e = document.getElementById('toast');
-  e.textContent = m; e.className = 'toast show ' + t;
-  setTimeout(() => e.className = 'toast', 4500);
-}
-function tab(n, el) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
-  document.querySelectorAll('.tc').forEach(t => t.classList.remove('on'));
-  document.getElementById('t-' + n).classList.add('on');
-  if (n === 'meus') loadMeus();
-  if (n === 'pedidos') loadPedidos();
-}
-function cjUrl(p) {
-  if (p.pid) return 'https://cjdropshipping.com/product/detail.html?id=' + p.pid;
-  return 'https://cjdropshipping.com/search?q=' + encodeURIComponent(p.sku || p.nome || '');
-}
-function calcMargem(precoCJ, precoML) {
-  const cjBRL = precoCJ * USD;
-  const taxaML = precoML * TAXA_ML;
-  const imposto = precoML * IMPOSTO;
-  const lucro = precoML - cjBRL - FRETE_CJ - taxaML - imposto;
-  const pct = precoML > 0 ? Math.round((lucro / precoML) * 100) : 0;
-  return { cjBRL, taxaML, imposto, lucro, pct };
-}
-function toggleSrc(btn, src) {
-  btn.classList.toggle('on');
-  if (srcsAtivas.has(src)) srcsAtivas.delete(src);
-  else srcsAtivas.add(src);
+function toast(m,t){const e=document.getElementById("toast");e.textContent=m;e.className="toast show "+(t||"ok");setTimeout(()=>e.className="toast",4500)}
+function tab(n,el){document.querySelectorAll(".tab").forEach(t=>t.classList.remove("on"));el.classList.add("on");document.querySelectorAll(".tc").forEach(t=>t.classList.remove("on"));document.getElementById("t-"+n).classList.add("on");if(n==="meus")loadMeus();if(n==="pedidos")loadPedidos()}
+function conectarML(){window.location.href="/auth/mercadolivre"}
+
+function calcMargem(cj,ml){const cjB=cj*USD,tx=ml*TAXA,imp=ml*IMP,luc=ml-cjB-FRETE-tx-imp,pct=ml>0?Math.round(luc/ml*100):0;return{cjB,tx,imp,luc,pct}}
+
+function otimizar(n){
+if(!n)return n;
+const trs={"For ":"Para ","With ":"Com ","And ":"e ","Home ":"Casa ","Office ":"Escritorio ","Women":"Feminino","Men ":"Masculino ","Kids":"Infantil","Phone ":"Celular ","Case":"Capa","Earring":"Brinco","Necklace":"Colar","Ring ":"Anel ","Bracelet":"Pulseira","Watch":"Relogio","Bag":"Bolsa","Wallet":"Carteira","Shoes":"Sapatos","Dress":"Vestido","Shirt":"Camisa","Pants":"Calca","Jacket":"Jaqueta","Lamp":"Lampada","Chair":"Cadeira","Table":"Mesa","Kitchen":"Cozinha","Car ":"Carro ","Toy":"Brinquedo","Game":"Jogo","Cable":"Cabo","Charger":"Carregador","Battery":"Bateria","Wireless":"Sem Fio"};
+let t=n;for(const[k,v]of Object.entries(trs))t=t.replace(new RegExp(k,"gi"),v);
+t=t.replace(/(High Quality|Fashion|Luxury|New |Latest|Wholesale|OEM|ODM)/gi,"").replace(/\s+/g," ").trim();
+if(t.length>60)t=t.substring(0,57)+"...";
+return t;
 }
 
-// ---- STATS ----
-async function loadStats() {
-  try {
-    const r = await fetch('/api/dashboard/stats');
-    const d = await r.json();
-    document.getElementById('k-prod').textContent = d.produtos || 0;
-    document.getElementById('k-ped').textContent = d.pedidos || 0;
-    const mlOk = d.ml;
-    document.getElementById('k-ml').textContent = mlOk ? '✅' : '❌';
-    document.getElementById('k-ml-s').textContent = mlOk ? 'Conectado — Patrick Luan' : 'Clique em Conectar ML';
-    document.getElementById('ml-status-txt').textContent = mlOk ? 'Patrick Luan · ID: 3421636550' : 'Não conectado';
-    const badge = document.getElementById('ml-badge');
-    badge.textContent = mlOk ? 'ATIVO' : 'DESCONECTADO';
-    badge.className = 'badge ' + (mlOk ? 'bs' : 'bd');
-    document.getElementById('btn-ml').style.display = mlOk ? 'none' : 'inline-flex';
-  } catch(e) {}
-}
-function conectarML() { window.location.href = '/auth/mercadolivre'; }
+async function loadStats(){try{const r=await fetch("/api/dashboard/stats");const d=await r.json();document.getElementById("k-prod").textContent=d.produtos||0;document.getElementById("k-ped").textContent=d.pedidos||0;const ok=d.ml;document.getElementById("k-ml").textContent=ok?"✅":"❌";document.getElementById("k-ml-s").textContent=ok?"Patrick Luan":"Conectar ML";document.getElementById("ml-status-txt").textContent=ok?"Patrick Luan · ID: 3421636550":"Não conectado";const bg=document.getElementById("ml-badge");bg.textContent=ok?"ATIVO":"DESCONECTADO";bg.className="badge "+(ok?"bs":"bd");document.getElementById("btn-ml").style.display=ok?"none":"inline-flex"}catch(e){}}
 
-// ---- BUSCA ----
-async function buscarTop() { document.getElementById('q').value = ''; await buscar(); }
-async function buscarTendencias() { document.getElementById('q').value = ''; await buscar(true); }
-async function buscar(tendencias = false) {
-  const q = document.getElementById('q').value;
-  const g = document.getElementById('grid');
-  g.innerHTML = '<div class="load">⏳ Buscando produtos' + (tendencias ? ' em tendência' : '') + '...</div>';
-  selecao.clear(); atualizarSelBar();
-  try {
-    const url = '/api/buscar-produtos?q=' + encodeURIComponent(q) + '&limit=30';
-    const r = await fetch(url);
-    const ps = await r.json();
-    if (!ps.length) { g.innerHTML = '<div class="load">Nenhum produto encontrado</div>'; return; }
-    g.innerHTML = ps.map(card).join('');
-  } catch(e) { g.innerHTML = '<div class="load" style="color:#f87171">Erro: ' + e.message + '</div>'; }
-}
-
-// ---- CARD ----
-function card(p, selMode = false) {
-  const precoML = parseFloat((p.preco_cj * USD * 2.5).toFixed(2));
-  const { lucro, pct } = calcMargem(p.preco_cj, precoML);
-  const url = cjUrl(p);
-  const isSel = selecao.has(p.pid);
-  const lucroColor = lucro > 0 ? '#4ade80' : '#f87171';
-  return '<div class="pc' + (isSel ? ' selected' : '') + '" id="pc-' + p.pid + '">' +
-    '<div class="pc-check' + (isSel ? ' on' : '') + '" onclick="toggleSel('' + p.pid + '')">' + (isSel ? '✓' : '') + '</div>' +
-    '<img class="pi" src="' + (p.imagem||'') + '" onerror="this.src='https://via.placeholder.com/68'" onclick="window.open('' + url + '','_blank')" title="Ver no CJ">' +
-    '<div style="flex:1;min-width:0">' +
-    '<div class="pn" title="' + p.nome + '">' + p.nome + '</div>' +
-    '<div class="ps">SKU: ' + p.sku + ' · ' + (p.categoria||'') + '</div>' +
-    '<div class="pp">' +
-    '<span class="pp-c">CJ: $' + (p.preco_cj||0).toFixed(2) + '</span>' +
-    '<span class="pp-m">ML: R$ ' + precoML.toFixed(2) + '</span>' +
-    '<span class="pp-lucro" style="color:' + lucroColor + '">Lucro: R$ ' + lucro.toFixed(2) + ' (' + pct + '%)</span>' +
-    '</div>' +
-    '<div class="pa">' +
-    '<button class="bs2 g" onclick='openModal(' + JSON.stringify(p) + ')'>🚀 Publicar</button>' +
-    '<button class="bs2 b" onclick="window.open('' + url + '','_blank')">🔗 Ver CJ</button>' +
-    '<button class="bs2 v" onclick='toggleSel("' + p.pid + '")'>☑ Selecionar</button>' +
-    '</div></div></div>';
+async function buscarTop(){document.getElementById("q").value="";await buscar()}
+async function buscar(){
+const q=document.getElementById("q").value;
+const g=document.getElementById("grid");
+g.innerHTML='<div class="load">⏳ Buscando...</div>';
+window._prods=[];
+try{
+const r=await fetch("/api/buscar-produtos?q="+encodeURIComponent(q)+"&limit=30");
+const ps=await r.json();
+if(!ps.length){g.innerHTML='<div class="load">Nenhum produto encontrado</div>';return;}
+window._prods=ps;
+g.innerHTML=ps.map((p,i)=>cardHTML(p,i)).join("");
+}catch(e){g.innerHTML='<div class="load" style="color:#f87171">Erro: '+e.message+'</div>';}}
+</script><script>
+function cardHTML(p,i){
+const ml=parseFloat((p.preco_cj*USD*2.5).toFixed(2));
+const m=calcMargem(p.preco_cj,ml);
+const lc=m.luc>0?"#4ade80":"#f87171";
+const pu=p.pid?"https://cjdropshipping.com/product/detail.html?id="+p.pid:"https://cjdropshipping.com/search?q="+encodeURIComponent(p.sku||"");
+const d=document.createElement("div");
+d.className="pc";
+d.innerHTML=[
+"<img class=\"pi\" src=\""+( p.imagem||"")+"\" onerror=\"this.src='https://via.placeholder.com/68'\">",
+"<div style=\"flex:1;min-width:0\">",
+"<div class=\"pn\">"+p.nome+"</div>",
+"<div class=\"ps\">SKU: "+p.sku+" · "+(p.categoria||"")+"</div>",
+"<div class=\"pp\">",
+"<span class=\"pp-c\">CJ: $"+(p.preco_cj||0).toFixed(2)+"</span>",
+"<span class=\"pp-m\">ML: R$ "+ml.toFixed(2)+"</span>",
+"<span style=\"color:"+lc+";background:#1f2937;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700\">Lucro: R$ "+m.luc.toFixed(2)+" ("+m.pct+"%)</span>",
+"</div><div class=\"pa\">",
+"<button class=\"bs2 g\" data-i=\""+i+"\" onclick=\"abrirModal(this.dataset.i)\">🚀 Publicar</button>",
+"<a class=\"bs2 b\" href=\""+pu+"\" target=\"_blank\" style=\"text-decoration:none\">🔗 Ver CJ</a>",
+"</div></div>"
+].join("");
+return d.outerHTML;
 }
 
-// ---- SELEÇÃO MÚLTIPLA ----
-function toggleSel(pid) {
-  if (selecao.has(pid)) selecao.delete(pid);
-  else selecao.add(pid);
-  // update card style
-  const el = document.getElementById('pc-' + pid);
-  if (el) {
-    el.className = 'pc' + (selecao.has(pid) ? ' selected' : '');
-    const chk = el.querySelector('.pc-check');
-    if (chk) { chk.className = 'pc-check' + (selecao.has(pid) ? ' on' : ''); chk.textContent = selecao.has(pid) ? '✓' : ''; }
-  }
-  atualizarSelBar();
+function abrirModal(idx){
+const p=window._prods[parseInt(idx)];
+if(!p)return;
+const t=otimizar(p.nome);
+document.getElementById("m-pid").value=p.pid||"";
+document.getElementById("m-img").value=p.imagem||"";
+document.getElementById("m-title").value=t;
+document.getElementById("m-cj").value=p.preco_cj||0;
+const ml=parseFloat((p.preco_cj*USD*2.5).toFixed(2));
+document.getElementById("m-ml").value=ml;
+calcTudo();
+document.getElementById("m-ot").style.display=t!==p.nome?"block":"none";
+document.getElementById("modal").classList.add("open");
 }
-function atualizarSelBar() {
-  const bar = document.getElementById('sel-bar');
-  const cnt = document.getElementById('sel-count');
-  if (selecao.size > 0) { bar.classList.add('show'); cnt.textContent = selecao.size + ' produto(s) selecionado(s)'; }
-  else bar.classList.remove('show');
-}
-function limparSelecao() { selecao.clear(); document.querySelectorAll('.pc').forEach(el => { el.classList.remove('selected'); const chk = el.querySelector('.pc-check'); if(chk){chk.classList.remove('on');chk.textContent='';}}) ; atualizarSelBar(); }
-async function publicarSelecionados() {
-  if (!selecao.size) return;
-  const g = document.getElementById('grid');
-  const todos = [...g.querySelectorAll('.pc')];
-  // gather produto data from DOM not ideal, re-fetch
-  toast('⏳ Publicando ' + selecao.size + ' produtos selecionados...', 'info');
-  let ok = 0, errs = 0;
-  for (const pid of selecao) {
-    try {
-      // find card data
-      const btn = g.querySelector('#pc-' + pid + ' button.g');
-      if (!btn) { errs++; continue; }
-    } catch(e) { errs++; }
-  }
-  toast('Use Auto-Publicar para publicar múltiplos!', 'info');
-}
-  </script>
-<script>
-// ---- MODAL PUBLICAR ----
-function openModal(p) {
-  document.getElementById('m-pid').value = p.pid || '';
-  document.getElementById('m-img').value = p.imagem || '';
-  document.getElementById('m-img-url').value = p.imagem || '';
-  // Título otimizado automaticamente
-  const tituloOtimizado = otimizarTitulo(p.nome);
-  document.getElementById('m-title').value = tituloOtimizado;
-  document.getElementById('m-cj').value = p.preco_cj || 0;
-  const precoML = parseFloat((p.preco_cj * USD * 2.5).toFixed(2));
-  document.getElementById('m-ml').value = precoML;
-  calcTudo();
-  // Mostrar aviso de otimização
-  const ot = document.getElementById('m-otimizado');
-  if (tituloOtimizado !== p.nome) {
-    ot.style.display = 'block';
-    ot.textContent = '✅ Título otimizado automaticamente para melhor SEO no ML!';
-  } else {
-    ot.style.display = 'none';
-  }
-  document.getElementById('modal').classList.add('open');
-}
-function otimizarTitulo(nome) {
-  if (!nome) return nome;
-  // Remove jargão técnico, traduz para PT-BR parcialmente, capitaliza
-  let t = nome
-    .replace(/For /gi, 'Para ')
-    .replace(/With /gi, 'Com ')
-    .replace(/And /gi, 'e ')
-    .replace(/Home /gi, 'Casa ')
-    .replace(/Office /gi, 'Escritório ')
-    .replace(/Women/gi, 'Feminino')
-    .replace(/Men /gi, 'Masculino ')
-    .replace(/Kids/gi, 'Infantil')
-    .replace(/Pet/gi, 'Pet')
-    .replace(/Phone /gi, 'Celular ')
-    .replace(/Case/gi, 'Capa')
-    .replace(/Earring/gi, 'Brinco')
-    .replace(/Necklace/gi, 'Colar')
-    .replace(/Ring /gi, 'Anel ')
-    .replace(/Bracelet/gi, 'Pulseira')
-    .replace(/Watch/gi, 'Relógio')
-    .replace(/Bag/gi, 'Bolsa')
-    .replace(/Wallet/gi, 'Carteira')
-    .replace(/Shoes/gi, 'Sapatos')
-    .replace(/Dress/gi, 'Vestido')
-    .replace(/Shirt/gi, 'Camisa')
-    .replace(/Pants/gi, 'Calça')
-    .replace(/Jacket/gi, 'Jaqueta')
-    .replace(/Lamp/gi, 'Lâmpada')
-    .replace(/Chair/gi, 'Cadeira')
-    .replace(/Table/gi, 'Mesa')
-    .replace(/Kitchen/gi, 'Cozinha')
-    .replace(/Bathroom/gi, 'Banheiro')
-    .replace(/Garden/gi, 'Jardim')
-    .replace(/Car /gi, 'Carro ')
-    .replace(/Bicycle/gi, 'Bicicleta')
-    .replace(/Toy/gi, 'Brinquedo')
-    .replace(/Game/gi, 'Jogo')
-    .replace(/Book/gi, 'Livro')
-    .replace(/Pen /gi, 'Caneta ')
-    .replace(/Notebook/gi, 'Notebook')
-    .replace(/Cable/gi, 'Cabo')
-    .replace(/Charger/gi, 'Carregador')
-    .replace(/Battery/gi, 'Bateria')
-    .replace(/Wireless/gi, 'Sem Fio')
-    .replace(/Bluetooth/gi, 'Bluetooth')
-    .replace(/USB/gi, 'USB')
-    .replace(/LED/gi, 'LED')
-    .replace(/RGB/gi, 'RGB');
-  // Remove palavras desnecessárias do CJ
-  t = t.replace(/(High Quality|Fashion|Luxury|New|Latest|Wholesale|OEM|ODM|MOQ)/gi, '').replace(/s+/g, ' ').trim();
-  // Limita a 60 chars
-  if (t.length > 60) t = t.substring(0, 57) + '...';
-  return t;
-}
-function calcTudo() {
-  const cj = parseFloat(document.getElementById('m-cj').value) || 0;
-  const precoML = parseFloat(document.getElementById('m-ml').value) || (cj * USD * 2.5);
-  document.getElementById('m-ml').value = parseFloat(precoML.toFixed(2));
-  const { cjBRL, taxaML, imposto, lucro, pct } = calcMargem(cj, precoML);
-  document.getElementById('mg-cj-brl').textContent = 'R$ ' + cjBRL.toFixed(2);
-  document.getElementById('mg-taxa-ml').textContent = '-R$ ' + taxaML.toFixed(2);
-  document.getElementById('mg-imposto').textContent = '-R$ ' + imposto.toFixed(2);
-  document.getElementById('mg-lucro').textContent = 'R$ ' + lucro.toFixed(2);
-  document.getElementById('mg-lucro').style.color = lucro > 0 ? '#4ade80' : '#f87171';
-  document.getElementById('mg-pct').textContent = pct + '% de margem';
-}
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function closeModal(){document.getElementById("modal").classList.remove("open")}
 
-// ---- PUBLICAR ----
-async function publicar() {
-  const imgUrl = document.getElementById('m-img-url').value || document.getElementById('m-img').value;
-  const body = {
-    pid: document.getElementById('m-pid').value,
-    titulo: document.getElementById('m-title').value,
-    preco_brl: parseFloat(document.getElementById('m-ml').value),
-    imagem: imgUrl,
-    categoria_ml: document.getElementById('m-cat').value || null,
-    quantidade: parseInt(document.getElementById('m-qtd').value) || 10
-  };
-  toast('⏳ Publicando no Mercado Livre...', 'info');
-  try {
-    const r = await fetch('/api/publicar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    const d = await r.json();
-    if (d.success) { closeModal(); toast('✅ Publicado com sucesso! ID ML: ' + d.ml_id); setTimeout(() => loadStats(), 2000); }
-    else toast('❌ ' + d.error, 'err');
-  } catch(e) { toast('❌ ' + e.message, 'err'); }
+function calcTudo(){
+const cj=parseFloat(document.getElementById("m-cj").value)||0;
+const ml=parseFloat(document.getElementById("m-ml").value)||(cj*USD*2.5);
+document.getElementById("m-ml").value=parseFloat(ml.toFixed(2));
+const m=calcMargem(cj,ml);
+document.getElementById("mg-cj-brl").textContent="R$ "+m.cjB.toFixed(2);
+document.getElementById("mg-taxa-ml").textContent="-R$ "+m.tx.toFixed(2);
+document.getElementById("mg-imposto").textContent="-R$ "+m.imp.toFixed(2);
+const el=document.getElementById("mg-lucro");
+el.textContent="R$ "+m.luc.toFixed(2);
+el.style.color=m.luc>0?"#4ade80":"#f87171";
+document.getElementById("mg-pct").textContent=m.pct+"% de margem";
 }
 
-// ---- AUTO-PUBLICAR COM PREVIEW ----
-async function autoPreview() {
-  const qty = parseInt(document.getElementById('auto-qty').value) || 10;
-  const btn = document.getElementById('btn-auto-prev');
-  btn.disabled = true; btn.textContent = '⏳ Buscando...';
-  toast('🔍 Buscando top ' + qty + ' produtos...', 'info');
-  try {
-    const r = await fetch('/api/buscar-produtos?q=&limit=' + qty);
-    const ps = await r.json();
-    produtosPreview = ps.slice(0, qty);
-    if (!produtosPreview.length) { toast('❌ Nenhum produto encontrado', 'err'); return; }
-    // Mostrar modal de preview
-    const grid = document.getElementById('preview-grid');
-    grid.innerHTML = produtosPreview.map((p, i) => {
-      const precoML = parseFloat((p.preco_cj * USD * 2.5).toFixed(2));
-      const { lucro, pct } = calcMargem(p.preco_cj, precoML);
-      const tit = otimizarTitulo(p.nome);
-      return '<div class="pc selected" id="prev-' + i + '" style="cursor:pointer" onclick="togglePrev(' + i + ')">' +
-        '<div class="pc-check on">✓</div>' +
-        '<img class="pi" src="' + (p.imagem||'') + '" onerror="this.src='https://via.placeholder.com/68'">' +
-        '<div style="flex:1;min-width:0">' +
-        '<div class="pn" title="' + tit + '">' + tit + (tit !== p.nome ? ' <span style=\"font-size:9px;color:#7c3aed\">[otimizado]</span>' : '') + '</div>' +
-        '<div class="ps">CJ: $' + p.preco_cj.toFixed(2) + ' → ML: R$ ' + precoML.toFixed(2) + ' · <span style="color:' + (lucro>0?'#4ade80':'#f87171') + '">Lucro: R$ ' + lucro.toFixed(2) + ' (' + pct + '%)</span></div>' +
-        '</div></div>';
-    }).join('');
-    document.getElementById('btn-confirmar').textContent = '✅ Publicar ' + produtosPreview.length + ' produtos no ML';
-    document.getElementById('modal-preview').classList.add('open');
-  } catch(e) { toast('❌ ' + e.message, 'err'); }
-  finally { btn.disabled = false; btn.textContent = '🔍 Ver Lista Antes de Publicar'; }
+async function publicar(){
+const body={pid:document.getElementById("m-pid").value,titulo:document.getElementById("m-title").value,preco_brl:parseFloat(document.getElementById("m-ml").value),imagem:document.getElementById("m-img").value,categoria_ml:document.getElementById("m-cat").value||null,quantidade:parseInt(document.getElementById("m-qtd").value)||10};
+toast("⏳ Publicando...","info");
+try{
+const r=await fetch("/api/publicar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+const d=await r.json();
+if(d.success){closeModal();toast("✅ Publicado! ID: "+d.ml_id);setTimeout(()=>loadStats(),2000);}
+else toast("❌ "+d.error,"err");
+}catch(e){toast("❌ "+e.message,"err");}
 }
-const prevSelecionados = new Set();
-function togglePrev(i) {
-  if (prevSelecionados.has(i)) prevSelecionados.delete(i);
-  else prevSelecionados.add(i);
-  const el = document.getElementById('prev-' + i);
-  if (el) {
-    el.className = 'pc' + (prevSelecionados.has(i) ? '' : ' selected');
-    const chk = el.querySelector('.pc-check');
-    if (chk) { chk.className = 'pc-check' + (prevSelecionados.has(i) ? '' : ' on'); chk.textContent = prevSelecionados.has(i) ? '' : '✓'; }
-  }
-  const ativos = produtosPreview.length - prevSelecionados.size;
-  document.getElementById('btn-confirmar').textContent = '✅ Publicar ' + ativos + ' produtos no ML';
-}
-async function confirmarAutoPublicar() {
-  document.getElementById('modal-preview').classList.remove('open');
-  const paraPublicar = produtosPreview.filter((_, i) => !prevSelecionados.has(i));
-  await executarAutoPublicar(paraPublicar);
-}
-async function autoPublicarDireto() {
-  if (autoRunning) { toast('⚠️ Automação já rodando...', 'info'); return; }
-  const qty = parseInt(document.getElementById('auto-qty').value) || 10;
-  toast('⏳ Buscando ' + qty + ' produtos...', 'info');
-  try {
-    const r = await fetch('/api/buscar-produtos?q=&limit=' + qty);
-    const ps = await r.json();
-    await executarAutoPublicar(ps.slice(0, qty));
-  } catch(e) { toast('❌ ' + e.message, 'err'); }
-}
-async function executarAutoPublicar(prods) {
-  if (!prods.length) { toast('❌ Nenhum produto para publicar', 'err'); return; }
-  autoRunning = true;
-  document.getElementById('btn-auto').disabled = true;
-  document.getElementById('btn-auto-prev').disabled = true;
-  const progBox = document.getElementById('prog-box');
-  const progF = document.getElementById('prog-f');
-  const progT = document.getElementById('prog-t');
-  progBox.style.display = 'block';
-  progF.style.width = '2%';
-  progT.textContent = 'Publicando ' + prods.length + ' produtos...';
-  let ok = 0, errs = 0;
-  for (let i = 0; i < prods.length; i++) {
-    const p = prods[i];
-    progF.style.width = Math.round(((i + 1) / prods.length) * 100) + '%';
-    const titulo = otimizarTitulo(p.nome);
-    progT.textContent = '(' + (i+1) + '/' + prods.length + ') ' + titulo.substring(0,45) + '...';
-    try {
-      const res = await fetch('/api/publicar', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pid: p.pid, titulo, preco_brl: parseFloat((p.preco_cj*USD*2.5).toFixed(2)), imagem: p.imagem, categoria_ml: null, quantidade: 10 })
-      });
-      const d = await res.json();
-      if (d.success) ok++; else errs++;
-    } catch(e) { errs++; }
-    await new Promise(r => setTimeout(r, 1500));
-  }
-  progF.style.width = '100%';
-  progT.textContent = '🎉 Concluído! ' + ok + ' publicados com sucesso, ' + errs + ' erros.';
-  toast('🎉 Auto-publicação concluída! ' + ok + ' anúncios criados no ML!');
-  setTimeout(() => loadStats(), 2000);
-  autoRunning = false;
-  document.getElementById('btn-auto').disabled = false;
-  document.getElementById('btn-auto-prev').disabled = false;
-  setTimeout(() => { progBox.style.display = 'none'; progF.style.width = '0%'; }, 7000);
+  </script><script>
+async function autoPreview(){
+const qty=parseInt(document.getElementById("auto-qty").value)||10;
+const btn=document.getElementById("btn-auto-prev");
+btn.disabled=true;btn.textContent="⏳ Buscando...";
+try{
+const r=await fetch("/api/buscar-produtos?q=&limit="+qty);
+const ps=await r.json();
+prvProds=ps.slice(0,qty);prvDel=new Set();
+if(!prvProds.length){toast("❌ Nenhum produto","err");return;}
+const grid=document.getElementById("preview-grid");
+grid.innerHTML=prvProds.map((p,i)=>{
+const ml=parseFloat((p.preco_cj*USD*2.5).toFixed(2));
+const m=calcMargem(p.preco_cj,ml);
+const t=otimizar(p.nome);
+return "<div class=\"pc\" id=\"pv"+i+"\" style=\"border-color:#7c3aed;cursor:pointer\" onclick=\"desmarcPrev("+i+")\">"
++"<img class=\"pi\" src=\""+( p.imagem||"")+"\" onerror=\"this.src='https://via.placeholder.com/68'\"/>"
++"<div style=\"flex:1;min-width:0\"><div class=\"pn\">"+t+"</div>"
++"<div class=\"ps\">CJ: $"+p.preco_cj.toFixed(2)+" → ML: R$ "+ml.toFixed(2)+"</div>"
++"<div style=\"font-size:10px;margin-top:4px;color:"+(m.luc>0?"#4ade80":"#f87171")+"\">Lucro: R$ "+m.luc.toFixed(2)+" ("+m.pct+"%)</div>"
++"</div><span id=\"ck"+i+"\" style=\"font-size:18px;color:#7c3aed;align-self:center\">✓</span></div>";
+}).join("");
+document.getElementById("btn-confirmar").textContent="✅ Publicar "+prvProds.length+" produtos no ML";
+document.getElementById("modal-preview").classList.add("open");
+}catch(e){toast("❌ "+e.message,"err");}
+finally{btn.disabled=false;btn.textContent="🔍 Ver Lista Antes de Publicar";}
 }
 
-// ---- MEUS PRODUTOS ----
-async function loadMeus() {
-  const g = document.getElementById('grid-meus');
-  g.innerHTML = '<div class="load">Carregando...</div>';
-  try {
-    const r = await fetch('/api/produtos');
-    const ps = await r.json();
-    if (!ps.length) { g.innerHTML = '<div class="load">Nenhum produto publicado ainda. Use a aba Buscar para publicar!</div>'; return; }
-    g.innerHTML = ps.map(p => {
-      const lucro = p.preco_ml - (p.preco_cj * USD) - FRETE_CJ - (p.preco_ml * TAXA_ML) - (p.preco_ml * IMPOSTO);
-      return '<div class="pc">' +
-        '<img class="pi" src="' + (p.imagem||'') + '" onerror="this.src='https://via.placeholder.com/68'">' +
-        '<div style="flex:1;min-width:0">' +
-        '<div class="pn">' + (p.titulo||'-') + '</div>' +
-        '<div class="ps">' + (p.ml_item_id||'-') + '</div>' +
-        '<div class="pp"><span class="pp-m">R$ ' + (p.preco_ml||0).toFixed(2) + '</span><span class="pp-lucro" style="color:' + (lucro>0?'#4ade80':'#f87171') + '">Lucro: R$ ' + lucro.toFixed(2) + '</span></div>' +
-        (p.ml_item_id ? '<div class="pa"><a href="https://www.mercadolivre.com.br/item/' + p.ml_item_id + '" target="_blank" class="bs2 b" style="text-decoration:none">Ver no ML</a></div>' : '') +
-        '</div><span class="badge bs">Ativo</span></div>';
-    }).join('');
-  } catch(e) { g.innerHTML = '<div class="load" style="color:#f87171">' + e.message + '</div>'; }
+function desmarcPrev(i){
+if(prvDel.has(i))prvDel.delete(i);else prvDel.add(i);
+const el=document.getElementById("pv"+i);
+const ck=document.getElementById("ck"+i);
+if(prvDel.has(i)){el.style.borderColor="#374151";el.style.opacity="0.4";ck.textContent="✗";ck.style.color="#f87171";}
+else{el.style.borderColor="#7c3aed";el.style.opacity="1";ck.textContent="✓";ck.style.color="#7c3aed";}
+const ativos=prvProds.length-prvDel.size;
+document.getElementById("btn-confirmar").textContent="✅ Publicar "+ativos+" produtos no ML";
 }
 
-// ---- PEDIDOS ----
-async function loadPedidos() {
-  try {
-    const r = await fetch('/api/pedidos');
-    const ps = await r.json();
-    const tbody = document.getElementById('t-ped-body');
-    if (!ps.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#475569;padding:20px">Nenhum pedido ainda — aguardando suas primeiras vendas! 🎯</td></tr>'; return; }
-    tbody.innerHTML = ps.map(p => {
-      const lucroEst = (p.total||0) * 0.32;
-      return '<tr>' +
-        '<td style="color:#60a5fa;font-weight:600">#' + (p.ml_order_id||'-') + '</td>' +
-        '<td>' + (p.buyer_name||'-') + '</td>' +
-        '<td style="color:#4ade80;font-weight:600">R$ ' + (p.total||0).toFixed(2) + '</td>' +
-        '<td style="color:#fbbf24">R$ ' + lucroEst.toFixed(2) + '</td>' +
-        '<td><span class="badge ' + (p.status==='paid'?'bs':p.status==='cancelled'?'bd':'bw') + '">' + (p.status||'-') + '</span></td>' +
-        '<td style="color:#6b7280">' + (p.created_at ? new Date(p.created_at).toLocaleDateString('pt-BR') : '-') + '</td>' +
-        '<td><button class="bs2 b" onclick="toast('Detalhes em breve!','info')">Ver</button></td>' +
-        '</tr>';
-    }).join('');
-  } catch(e) {}
+async function confirmarAutoPublicar(){
+document.getElementById("modal-preview").classList.remove("open");
+const lista=prvProds.filter((_,i)=>!prvDel.has(i));
+await executarAuto(lista);
 }
 
-// ---- SYNC ----
-async function syncPedidos() {
-  toast('⏳ Sincronizando pedidos do ML...', 'info');
-  try {
-    const r = await fetch('/api/ml/sync-orders', { method: 'POST' });
-    const d = await r.json();
-    toast('✅ ' + (d.message || 'Sincronizado!'));
-    setTimeout(() => { loadPedidos(); loadStats(); }, 1000);
-  } catch(e) { toast('❌ ' + e.message, 'err'); }
-}
-async function testar() {
-  try {
-    const r = await fetch('/api/cj/test');
-    const d = await r.json();
-    toast(d.success ? '✅ CJ Auth OK!' : '❌ ' + d.error, d.success ? 'ok' : 'err');
-  } catch(e) { toast('❌ ' + e.message, 'err'); }
-}
-function toggleLog() {
-  const l = document.getElementById('log');
-  l.style.display = l.style.display === 'none' ? 'block' : 'none';
-  if (l.style.display === 'block') {
-    l.textContent = '📋 DropFacil v4.0 Log\n' +
-      '✅ CJ Dropshipping: CONECTADO (apiKey)\n' +
-      '⏳ Mercado Livre: verificando token...\n' +
-      '⏳ Shopee: aguardando aprovação\n' +
-      '🕐 ' + new Date().toLocaleString('pt-BR') + '\n' +
-      '⚡ Automação: Ativa (sync 15min, refresh ML 5h)\n\n' +
-      'Endpoints:\n' +
-      '  GET  /api/buscar-produtos\n' +
-      '  POST /api/publicar\n' +
-      '  GET  /api/dashboard/stats\n' +
-      '  POST /api/ml/sync-orders\n' +
-      '  GET  /auth/mercadolivre\n' +
-      '  GET  /auth/callback';
-  }
+async function autoPublicarDireto(){
+if(autoRun){toast("⚠️ Já rodando...","info");return;}
+const qty=parseInt(document.getElementById("auto-qty").value)||10;
+toast("⏳ Buscando "+qty+" produtos...","info");
+try{const r=await fetch("/api/buscar-produtos?q=&limit="+qty);const ps=await r.json();await executarAuto(ps.slice(0,qty));}
+catch(e){toast("❌ "+e.message,"err");}
 }
 
-window.onload = () => { loadStats(); buscarTop(); };
+async function executarAuto(prods){
+if(!prods.length){toast("❌ Nenhum produto","err");return;}
+autoRun=true;
+document.getElementById("btn-auto").disabled=true;
+document.getElementById("btn-auto-prev").disabled=true;
+const pb=document.getElementById("prog-box"),pf=document.getElementById("prog-f"),pt=document.getElementById("prog-t");
+pb.style.display="block";pf.style.width="2%";
+let ok=0,err=0;
+for(let i=0;i<prods.length;i++){
+const p=prods[i];
+pf.style.width=Math.round((i+1)/prods.length*100)+"%";
+pt.textContent="("+(i+1)+"/"+prods.length+") "+otimizar(p.nome).substring(0,50)+"...";
+try{const res=await fetch("/api/publicar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pid:p.pid,titulo:otimizar(p.nome),preco_brl:parseFloat((p.preco_cj*USD*2.5).toFixed(2)),imagem:p.imagem,categoria_ml:null,quantidade:10})});const d=await res.json();if(d.success)ok++;else err++;}
+catch(e){err++;}
+await new Promise(r=>setTimeout(r,1500));
+}
+pf.style.width="100%";
+pt.textContent="🎉 Concluído! "+ok+" publicados, "+err+" erros.";
+toast("🎉 "+ok+" anúncios criados no ML!");
+setTimeout(()=>loadStats(),2000);
+autoRun=false;
+document.getElementById("btn-auto").disabled=false;
+document.getElementById("btn-auto-prev").disabled=false;
+setTimeout(()=>{pb.style.display="none";pf.style.width="0%";},8000);
+}
+  </script><script>
+async function loadMeus(){const g=document.getElementById("grid-meus");g.innerHTML='<div class="load">Carregando...</div>';try{const r=await fetch("/api/produtos");const ps=await r.json();if(!ps.length){g.innerHTML='<div class="load">Nenhum produto ainda.</div>';return;}g.innerHTML=ps.map(p=>{const l=(p.preco_ml||0)-(p.preco_cj||0)*USD-FRETE-(p.preco_ml||0)*TAXA-(p.preco_ml||0)*IMP;const lc=l>0?"#4ade80":"#f87171";let h='<div class="pc"><img class="pi" src="'+( p.imagem||"")+'" onerror="this.src=\'https://via.placeholder.com/68\'">';h+='<div style="flex:1;min-width:0"><div class="pn">'+(p.titulo||"-")+'</div>';h+='<div class="ps">'+(p.ml_item_id||"-")+'</div>';h+='<div class="pp"><span class="pp-m">R$ '+(p.preco_ml||0).toFixed(2)+'</span><span style="color:'+lc+';font-size:10px;font-weight:700;margin-left:6px">Lucro: R$ '+l.toFixed(2)+'</span></div>';if(p.ml_item_id)h+='<div class="pa"><a href="https://www.mercadolivre.com.br/item/'+p.ml_item_id+'" target="_blank" class="bs2 b" style="text-decoration:none">Ver ML</a></div>';h+='</div><span class="badge bs">Ativo</span></div>';return h;}).join("");}catch(e){g.innerHTML='<div class="load" style="color:#f87171">'+e.message+'</div>';}}
+async function loadPedidos(){try{const r=await fetch("/api/pedidos");const ps=await r.json();const tb=document.getElementById("t-ped-body");if(!ps.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:#475569;padding:20px">Nenhum pedido ainda 🎯</td></tr>';return;}tb.innerHTML=ps.map(p=>{const le=(p.total||0)*0.32;const sc=p.status==="paid"?"bs":p.status==="cancelled"?"bd":"bw";return '<tr><td style="color:#60a5fa;font-weight:600">#'+(p.ml_order_id||"-")+'</td><td>'+(p.buyer_name||"-")+'</td><td style="color:#4ade80;font-weight:600">R$ '+(p.total||0).toFixed(2)+'</td><td style="color:#fbbf24">R$ '+le.toFixed(2)+'</td><td><span class="badge '+sc+'">'+(p.status||"-")+'</span></td><td style="color:#6b7280">'+( p.created_at?new Date(p.created_at).toLocaleDateString("pt-BR"):"-")+'</td><td><button class="bs2 b">Ver</button></td></tr>';}).join("");}catch(e){}}
+async function syncPedidos(){toast("⏳ Sincronizando...","info");try{const r=await fetch("/api/ml/sync-orders",{method:"POST"});const d=await r.json();toast("✅ "+(d.message||"Sincronizado!"));setTimeout(()=>{loadPedidos();loadStats();},1000);}catch(e){toast("❌ "+e.message,"err");}}
+async function testar(){try{const r=await fetch("/api/cj/test");const d=await r.json();toast(d.success?"✅ CJ OK!":"❌ "+d.error,d.success?"ok":"err");}catch(e){toast("❌ "+e.message,"err");}}
+function toggleLog(){const l=document.getElementById("log");l.style.display=l.style.display==="none"?"block":"none";if(l.style.display==="block")l.textContent="DropFacil v4.0\n✅ CJ CONECTADO\n⏳ ML: verificar token\n⚡ Sync ativo\n"+new Date().toLocaleString("pt-BR");}
+window.onload=()=>{loadStats();buscarTop();};
 </script>
-</body>
-</html>
+</body></html>
