@@ -21,22 +21,20 @@ app.use('/api/dashboard', require('./routes/dashboard'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ====== CJ TOKEN CACHE (evita re-autenticar a cada request) ======
+// ====== CJ TOKEN CACHE ======
 let cjTokenCache = { token: null, expiresAt: 0 };
 const CJ_BASE = 'https://developers.cjdropshipping.com/api2.0/v1';
 
 async function getCjToken() {
   const now = Date.now();
-  if (cjTokenCache.token && now < cjTokenCache.expiresAt) {
-    return cjTokenCache.token;
-  }
+  if (cjTokenCache.token && now < cjTokenCache.expiresAt) return cjTokenCache.token;
   const res = await axios.post(CJ_BASE + '/authentication/getAccessToken',
     { apiKey: process.env.CJ_API_KEY },
     { headers: { 'Content-Type': 'application/json' } }
   );
   const token = res.data.data.accessToken;
-  cjTokenCache = { token, expiresAt: now + 170 * 60 * 1000 }; // cache 170 min
-  console.log('[CJ] Token renovado, expira em 170min');
+  cjTokenCache = { token, expiresAt: now + 170 * 60 * 1000 };
+  console.log('[CJ] Token renovado');
   return token;
 }
 
@@ -72,6 +70,22 @@ app.get('/auth/callback', async (req, res) => {
     console.error('[ML OAuth] Erro:', e.response?.data || e.message);
     res.redirect('/?erro=oauth_falhou&msg=' + encodeURIComponent(e.response?.data?.message || e.message));
   }
+});
+
+// ====== ML Status ======
+app.get('/api/ml/status', async (req, res) => {
+  try {
+    const { data: row, error } = await supabase.from('ml_tokens').select('user_id,access_token').limit(1).single();
+    if (error || !row) return res.json({ conectado: false });
+    try {
+      const r = await axios.get('https://api.mercadolibre.com/users/me', {
+        headers: { Authorization: 'Bearer ' + row.access_token }
+      });
+      return res.json({ conectado: true, user_id: row.user_id, nickname: r.data.nickname, email: r.data.email });
+    } catch (e2) {
+      return res.json({ conectado: false, user_id: row.user_id, erro: 'token_expirado' });
+    }
+  } catch (e) { return res.json({ conectado: false }); }
 });
 
 app.post('/api/ml/refresh-token', async (req, res) => {
@@ -115,20 +129,54 @@ app.post('/api/ml/sync-orders', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.response?.data?.message || e.message }); }
 });
 
-// ====== Buscar produtos CJ (com cache de token) ======
+// ====== Buscar produtos CJ — MAIS VENDIDOS REAIS ======
+const TRENDING_SEARCHES = [
+  'pet accessories', 'phone case', 'led light', 'wireless earbuds',
+  'kitchen gadget', 'beauty makeup', 'fitness band', 'smart watch',
+  'baby toys', 'home decor', 'jewelry', 'hair accessories',
+  'bluetooth speaker', 'car accessories', 'yoga mat', 'nail art',
+  'gaming accessories', 'sleep mask', 'portable fan', 'planner organizer'
+];
+let trendingIdx = 0;
+
 app.get('/api/buscar-produtos', async (req, res) => {
   try {
-    const { q = '', page = 1, limit = 20 } = req.query;
+    const { q = '', page = 1, limit = 20, top = 'false' } = req.query;
     const token = await getCjToken();
     const pageSize = Math.min(parseInt(limit) || 20, 50);
-    const params = q
-      ? { productName: q, pageNum: parseInt(page), pageSize }
-      : { pageNum: parseInt(page), pageSize };
-    const { data } = await axios.get(CJ_BASE + '/product/list', {
-      params,
-      headers: { 'CJ-Access-Token': token }
-    });
-    const list = data.data?.list || data.data || [];
+
+    let searchQ = q;
+    if (!q || top === 'true') {
+      searchQ = TRENDING_SEARCHES[trendingIdx % TRENDING_SEARCHES.length];
+      trendingIdx++;
+    }
+
+    let list = [];
+    try {
+      const { data } = await axios.get(CJ_BASE + '/product/list', {
+        params: { productName: searchQ, pageNum: parseInt(page), pageSize, sortField: 'orderNum', sortType: 'desc' },
+        headers: { 'CJ-Access-Token': token }
+      });
+      list = data.data?.list || data.data || [];
+    } catch (e1) {
+      const { data } = await axios.get(CJ_BASE + '/product/list', {
+        params: { productName: searchQ, pageNum: parseInt(page), pageSize },
+        headers: { 'CJ-Access-Token': token }
+      });
+      list = data.data?.list || data.data || [];
+    }
+
+    if (list.length < 5 && !q) {
+      const fallbackQ = TRENDING_SEARCHES[(trendingIdx + 3) % TRENDING_SEARCHES.length];
+      try {
+        const { data: d2 } = await axios.get(CJ_BASE + '/product/list', {
+          params: { productName: fallbackQ, pageNum: 1, pageSize: pageSize - list.length },
+          headers: { 'CJ-Access-Token': token }
+        });
+        list = [...list, ...(d2.data?.list || d2.data || [])];
+      } catch(e) {}
+    }
+
     const prods = list.map(p => ({
       pid: p.pid,
       nome: p.productNameEn || p.productName,
@@ -136,9 +184,14 @@ app.get('/api/buscar-produtos', async (req, res) => {
       imagem: p.productImage,
       preco_cj: parseFloat(p.sellPrice) || 0,
       categoria: p.categoryName,
-      peso: p.productWeight
+      peso: p.productWeight,
+      vendas: p.productUnit || p.saleNum || 0,
+      avaliacao: p.productEvaluate || 0,
+      busca: searchQ
     }));
-    res.json(prods);
+
+    const filtrados = prods.filter(p => p.preco_cj > 0.5 && p.preco_cj < 50 && p.nome);
+    res.json(filtrados);
   } catch (e) {
     if (e.response?.status === 401) cjTokenCache = { token: null, expiresAt: 0 };
     res.status(500).json({ error: e.message });
@@ -148,9 +201,12 @@ app.get('/api/buscar-produtos', async (req, res) => {
 // ====== Publicar produto no ML ======
 app.post('/api/publicar', async (req, res) => {
   try {
-    const { pid, titulo, preco_brl, imagem, categoria_ml, quantidade } = req.body;
+    const { pid, titulo, preco_brl, imagem, categoria_ml, quantidade, descricao } = req.body;
     const { data: tokenData } = await supabase.from('ml_tokens').select('access_token,user_id').limit(1).single();
     if (!tokenData) return res.status(400).json({ error: 'ML nao conectado. Clique em Conectar ML no dashboard.' });
+
+    const desc = descricao || titulo + ' | Produto de alta qualidade com entrega para todo o Brasil. Garantia de satisfacao ou devolvemos seu dinheiro. Produto verificado | Frete gratis | Melhor preco';
+
     const listing = {
       title: titulo,
       category_id: categoria_ml || 'MLB271599',
@@ -160,17 +216,20 @@ app.post('/api/publicar', async (req, res) => {
       buying_mode: 'buy_it_now',
       condition: 'new',
       listing_type_id: 'gold_special',
-      description: { plain_text: titulo },
+      description: { plain_text: desc },
       pictures: [{ source: imagem }],
       shipping: { mode: 'me2', free_shipping: true }
     };
+
     const { data } = await axios.post('https://api.mercadolibre.com/items', listing, {
       headers: { Authorization: 'Bearer ' + tokenData.access_token }
     });
+
     await supabase.from('produtos').upsert({
       ml_item_id: data.id, cj_pid: pid, titulo,
       preco_ml: preco_brl, imagem, status: 'active', ml_user_id: tokenData.user_id
     });
+
     res.json({ success: true, ml_id: data.id, permalink: data.permalink });
   } catch (e) { res.status(500).json({ error: e.response?.data?.message || e.message }); }
 });
@@ -199,7 +258,7 @@ cron.schedule('*/15 * * * *', async () => {
         ml_user_id: t.user_id, created_at: o.date_created
       }, { onConflict: 'ml_order_id' });
     }
-    console.log('[CRON] Pedidos sincronizados:', r.data.results?.length || 0);
+    console.log('[CRON] Pedidos sync:', r.data.results?.length || 0);
   } catch (e) { console.error('[CRON pedidos]', e.message); }
 });
 
@@ -219,21 +278,18 @@ cron.schedule('0 */5 * * *', async () => {
       refresh_token: data.refresh_token,
       updated_at: new Date().toISOString()
     }).eq('user_id', row.user_id);
-    console.log('[CRON] Token ML renovado automaticamente');
+    console.log('[CRON] Token ML renovado');
   } catch (e) { console.error('[CRON refresh ML]', e.message); }
 });
 
 // ====== CRON: pre-aquecer token CJ a cada 2h ======
 cron.schedule('0 */2 * * *', async () => {
-  try {
-    await getCjToken();
-    console.log('[CRON] Token CJ pre-aquecido');
-  } catch (e) { console.error('[CRON CJ token]', e.message); }
+  try { await getCjToken(); console.log('[CRON] Token CJ pre-aquecido'); }
+  catch (e) { console.error('[CRON CJ token]', e.message); }
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log('DropFacil v4.0 porta ' + PORT);
-  // Pre-aquecer token CJ na inicializacao
-  getCjToken().then(() => console.log('[INIT] Token CJ pre-aquecido')).catch(e => console.error('[INIT CJ]', e.message));
+  console.log('DropFacil v5.0 porta ' + PORT);
+  getCjToken().then(() => console.log('[INIT] Token CJ OK')).catch(e => console.error('[INIT CJ]', e.message));
 });
