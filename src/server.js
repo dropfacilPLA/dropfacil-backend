@@ -19,12 +19,28 @@ app.use('/api/produtos', require('./routes/produtos'));
 app.use('/api/pedidos', require('./routes/pedidos'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 
-// Servir arquivos estaticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ==================== OAuth Mercado Livre ====================
+// ====== CJ TOKEN CACHE (evita re-autenticar a cada request) ======
+let cjTokenCache = { token: null, expiresAt: 0 };
+const CJ_BASE = 'https://developers.cjdropshipping.com/api2.0/v1';
 
-// GET /auth/mercadolivre - redireciona para autorizacao ML
+async function getCjToken() {
+  const now = Date.now();
+  if (cjTokenCache.token && now < cjTokenCache.expiresAt) {
+    return cjTokenCache.token;
+  }
+  const res = await axios.post(CJ_BASE + '/authentication/getAccessToken',
+    { apiKey: process.env.CJ_API_KEY },
+    { headers: { 'Content-Type': 'application/json' } }
+  );
+  const token = res.data.data.accessToken;
+  cjTokenCache = { token, expiresAt: now + 170 * 60 * 1000 }; // cache 170 min
+  console.log('[CJ] Token renovado, expira em 170min');
+  return token;
+}
+
+// ====== OAuth Mercado Livre ======
 app.get('/auth/mercadolivre', (req, res) => {
   const url = 'https://auth.mercadolivre.com.br/authorization?response_type=code' +
     '&client_id=' + process.env.ML_APP_ID +
@@ -32,7 +48,6 @@ app.get('/auth/mercadolivre', (req, res) => {
   res.redirect(url);
 });
 
-// GET /auth/callback - ML retorna com code, trocamos por token
 app.get('/auth/callback', async (req, res) => {
   const { code } = req.query;
   if (!code) return res.redirect('/?erro=sem_code');
@@ -44,7 +59,6 @@ app.get('/auth/callback', async (req, res) => {
       code,
       redirect_uri: process.env.ML_REDIRECT_URI
     }, { headers: { 'Content-Type': 'application/json', Accept: 'application/json' } });
-    // Salva token no Supabase
     await supabase.from('ml_tokens').upsert({
       user_id: String(data.user_id),
       access_token: data.access_token,
@@ -56,11 +70,10 @@ app.get('/auth/callback', async (req, res) => {
     res.redirect('/?ml=conectado');
   } catch (e) {
     console.error('[ML OAuth] Erro:', e.response?.data || e.message);
-    res.redirect('/?erro=oauth_falhou');
+    res.redirect('/?erro=oauth_falhou&msg=' + encodeURIComponent(e.response?.data?.message || e.message));
   }
 });
 
-// POST /api/ml/refresh-token - renova token expirado
 app.post('/api/ml/refresh-token', async (req, res) => {
   try {
     const { data: row } = await supabase.from('ml_tokens').select('refresh_token,user_id').limit(1).single();
@@ -80,7 +93,6 @@ app.post('/api/ml/refresh-token', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.response?.data || e.message }); }
 });
 
-// POST /api/ml/sync-orders - sincroniza pedidos manualmente
 app.post('/api/ml/sync-orders', async (req, res) => {
   try {
     const { data: tokens } = await supabase.from('ml_tokens').select('access_token,user_id').limit(1);
@@ -103,22 +115,21 @@ app.post('/api/ml/sync-orders', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.response?.data?.message || e.message }); }
 });
 
-// ==================== Buscar produtos CJ ====================
-
+// ====== Buscar produtos CJ (com cache de token) ======
 app.get('/api/buscar-produtos', async (req, res) => {
   try {
     const { q = '', page = 1, limit = 20 } = req.query;
-    const CJ_BASE = 'https://developers.cjdropshipping.com/api2.0/v1';
-    const tokenRes = await axios.post(CJ_BASE + '/authentication/getAccessToken',
-      { apiKey: process.env.CJ_API_KEY },
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-    const token = tokenRes.data.data.accessToken;
+    const token = await getCjToken();
+    const pageSize = Math.min(parseInt(limit) || 20, 50);
     const params = q
-      ? { productName: q, pageNum: page, pageSize: Math.min(parseInt(limit)||20, 50) }
-      : { pageNum: page, pageSize: Math.min(parseInt(limit)||20, 50) };
-    const { data } = await axios.get(CJ_BASE + '/product/list', { params, headers: { 'CJ-Access-Token': token } });
-    const prods = (data.data?.list || data.data || []).map(p => ({
+      ? { productName: q, pageNum: parseInt(page), pageSize }
+      : { pageNum: parseInt(page), pageSize };
+    const { data } = await axios.get(CJ_BASE + '/product/list', {
+      params,
+      headers: { 'CJ-Access-Token': token }
+    });
+    const list = data.data?.list || data.data || [];
+    const prods = list.map(p => ({
       pid: p.pid,
       nome: p.productNameEn || p.productName,
       sku: p.productSku,
@@ -128,11 +139,13 @@ app.get('/api/buscar-produtos', async (req, res) => {
       peso: p.productWeight
     }));
     res.json(prods);
-  } catch (e) { res.status(500).json({ error: e.message }); }
+  } catch (e) {
+    if (e.response?.status === 401) cjTokenCache = { token: null, expiresAt: 0 };
+    res.status(500).json({ error: e.message });
+  }
 });
 
-// ==================== Publicar produto no ML ====================
-
+// ====== Publicar produto no ML ======
 app.post('/api/publicar', async (req, res) => {
   try {
     const { pid, titulo, preco_brl, imagem, categoria_ml, quantidade } = req.body;
@@ -162,19 +175,14 @@ app.post('/api/publicar', async (req, res) => {
   } catch (e) { res.status(500).json({ error: e.response?.data?.message || e.message }); }
 });
 
-// ==================== Dashboard ====================
-
+// ====== Dashboard HTML ======
 app.get('/', (req, res) => {
   const htmlPath = path.join(__dirname, 'public', 'index.html');
-  if (fs.existsSync(htmlPath)) {
-    res.sendFile(htmlPath);
-  } else {
-    res.send('<h2>DropFacil Online. Acesse <a href="/api/cj/test">/api/cj/test</a></h2>');
-  }
+  if (fs.existsSync(htmlPath)) res.sendFile(htmlPath);
+  else res.send('<h2>DropFacil Online.</h2>');
 });
 
-// ==================== CRON: sync pedidos a cada 15 min ====================
-
+// ====== CRON: sync pedidos a cada 15 min ======
 cron.schedule('*/15 * * * *', async () => {
   try {
     const { data: tokens } = await supabase.from('ml_tokens').select('access_token,user_id').limit(1);
@@ -192,11 +200,10 @@ cron.schedule('*/15 * * * *', async () => {
       }, { onConflict: 'ml_order_id' });
     }
     console.log('[CRON] Pedidos sincronizados:', r.data.results?.length || 0);
-  } catch (e) { console.error('[CRON]', e.message); }
+  } catch (e) { console.error('[CRON pedidos]', e.message); }
 });
 
-// ==================== CRON: renovar token ML a cada 5h ====================
-
+// ====== CRON: renovar token ML a cada 5h ======
 cron.schedule('0 */5 * * *', async () => {
   try {
     const { data: row } = await supabase.from('ml_tokens').select('refresh_token,user_id').limit(1).single();
@@ -213,8 +220,20 @@ cron.schedule('0 */5 * * *', async () => {
       updated_at: new Date().toISOString()
     }).eq('user_id', row.user_id);
     console.log('[CRON] Token ML renovado automaticamente');
-  } catch (e) { console.error('[CRON refresh]', e.message); }
+  } catch (e) { console.error('[CRON refresh ML]', e.message); }
+});
+
+// ====== CRON: pre-aquecer token CJ a cada 2h ======
+cron.schedule('0 */2 * * *', async () => {
+  try {
+    await getCjToken();
+    console.log('[CRON] Token CJ pre-aquecido');
+  } catch (e) { console.error('[CRON CJ token]', e.message); }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log('DropFacil v3.0 porta ' + PORT));
+app.listen(PORT, () => {
+  console.log('DropFacil v4.0 porta ' + PORT);
+  // Pre-aquecer token CJ na inicializacao
+  getCjToken().then(() => console.log('[INIT] Token CJ pre-aquecido')).catch(e => console.error('[INIT CJ]', e.message));
+});
