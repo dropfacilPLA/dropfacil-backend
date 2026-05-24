@@ -38,6 +38,9 @@ async function getCjToken() {
   return token;
 }
 
+// Alias para callback ML (redirect_uri configurado como /callback no dev portal)
+app.get('/callback', (req, res) => res.redirect('/auth/callback?' + require('querystring').stringify(req.query)));
+
 // ====== OAuth Mercado Livre ======
 app.get('/auth/mercadolivre', (req, res) => {
   const url = 'https://auth.mercadolivre.com.br/authorization?response_type=code' +
