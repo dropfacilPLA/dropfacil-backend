@@ -204,7 +204,7 @@ tr:hover td{background:#0d1117}
 <button class="btn" onclick="document.getElementById('modal-preview').classList.remove('open')" style="background:#1f2937;color:#9ca3af">Cancelar</button>
 </div></div></div>
 <div class="toast" id="toast"></div>
-<div class="f">DropFacil v5.0 · Patrick Luan · 100% Automatizado</div>
+<div class="f">DropFacil v5.5 · Patrick Luan · 100% Automatizado</div>
 <script>
 const USD=5.10,TAXA=0.12,IMP=0.06,FRETE=8;
 let autoRun=false,prvProds=[],prvDel=new Set();
@@ -304,7 +304,7 @@ var c3=document.createElement('span');c3.style.cssText='color:'+lc+';background:
 pp.appendChild(c1);pp.appendChild(c2);pp.appendChild(c3);
 var pa=document.createElement('div');pa.className='pa';
 var b1=document.createElement('button');b1.className='bs2 g';b1.setAttribute('data-i',i);b1.textContent='🚀 Publicar';
-b1.onclick=function(){abrirModal(this.getAttribute('data-i'));};
+b1.setAttribute('onclick','abrirModal('+i+')');
 var a1=document.createElement('a');a1.className='bs2 b';a1.href=pu;a1.target='_blank';a1.style.textDecoration='none';a1.textContent='🔗 Ver CJ';
 pa.appendChild(b1);pa.appendChild(a1);
 body.appendChild(nm);body.appendChild(sk);
