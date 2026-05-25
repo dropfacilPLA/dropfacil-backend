@@ -81,6 +81,7 @@ app.get('/auth/mercadolivre', (req, res) => {
     res.redirect(url);
 });
 
+app.get('/callback', (req, res) => { const q = new URLSearchParams(req.query).toString(); res.redirect('/auth/callback' + (q ? '?' + q : '')); });
 app.get('/auth/callback', async (req, res) => {
     const { code } = req.query;
     if (!code) return res.redirect('/?erro=sem_code');
