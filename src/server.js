@@ -268,10 +268,9 @@ app.post('/api/publicar', async (req, res) => {
               available_quantity: quantidade || 10,
               buying_mode: 'buy_it_now',
               condition: 'new',
-              listing_type_id: 'gold_special',
+              listing_type_id: 'free',
               description: { plain_text: titulo + '\n\nProduto novo, qualidade garantida. Enviamos para todo o Brasil!' },
               pictures: [{ source: imagem }],
-              shipping: { mode: 'me2', free_shipping: true }
       };
 
       const { data } = await axios.post('https://api.mercadolibre.com/items', listing, {
