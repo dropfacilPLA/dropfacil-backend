@@ -97,7 +97,7 @@ app.get('/auth/callback', async (req, res) => {
                   user_id: String(data.user_id),
                   access_token: data.access_token,
                   refresh_token: data.refresh_token,
-                  expires_in: data.expires_in,
+                  expires_at: new Date(Date.now() + (data.expires_in || 21600) * 1000).toISOString(),
                   updated_at: new Date().toISOString()
           }, { onConflict: 'user_id' });
           console.log('[ML OAuth] Token salvo para user_id:', data.user_id);
