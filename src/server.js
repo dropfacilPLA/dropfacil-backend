@@ -76,7 +76,7 @@ async function getCategoryId(titulo, accessToken) {
   try {
     const { data } = await axios.get(
       'https://api.mercadolibre.com/sites/MLB/domain_discovery/search?q=' +
-      encodeURIComponent(titulo) + '&limit=3',
+      encodeURIComponent(titulo) + '&limit=1',
       { headers: { Authorization: 'Bearer ' + accessToken } }
     );
     if (data && data[0] && data[0].category_id) {
@@ -86,77 +86,97 @@ async function getCategoryId(titulo, accessToken) {
   } catch (e) {
     console.log('[ML] Falha ao detectar categoria:', e.message);
   }
-  return 'MLB1648';
+  return null; // sem categoria detectada
 }
 
-// ====== Publicar no ML com retry sem atributos ======
-async function publicarNoML(listing, accessToken) {
-  // Tentativa 1: com atributos
+// ====== Buscar atributos obrigatorios e montar valores padrão ======
+async function buildAttributes(categoryId, accessToken) {
   try {
-    const { data } = await axios.post('https://api.mercadolibre.com/items', listing, {
-      headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
-    });
-    return data;
-  } catch (e1) {
-    const errBody = e1.response?.data;
-    const causes = errBody?.cause || [];
-    const errMsg = JSON.stringify(errBody).toLowerCase();
-
-    // Se erro for de atributo invalido ou normalizable -> retry sem atributos
-    const attrError = causes.some(c =>
-      c.code === 'item.attributes.normalizable.invalid' ||
-      c.code === 'item.attributes.missing_required' ||
-      String(c.message || '').includes('attribute') ||
-      String(c.message || '').includes('Attribute')
+    const { data } = await axios.get(
+      'https://api.mercadolibre.com/categories/' + categoryId + '/attributes',
+      { headers: { Authorization: 'Bearer ' + accessToken } }
     );
-
-    if (attrError) {
-      console.log('[PUBLICAR] Erro de atributo, tentando sem atributos...');
-      const listingSimples = Object.assign({}, listing);
-      delete listingSimples.attributes;
-      try {
-        const { data: data2 } = await axios.post('https://api.mercadolibre.com/items', listingSimples, {
-          headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
-        });
-        return data2;
-      } catch (e2) {
-        const errBody2 = e2.response?.data;
-        const causes2 = errBody2?.cause || [];
-        const leafError = causes2.some(c =>
-          String(c.message || '').includes('leaf') ||
-          c.code === 'item.category_id.invalid'
-        );
-
-        // Se erro for de categoria -> tenta categoria generica
-        if (leafError || String(JSON.stringify(errBody2)).includes('leaf')) {
-          console.log('[PUBLICAR] Erro de categoria, tentando MLB1648...');
-          listingSimples.category_id = 'MLB1648';
-          const { data: data3 } = await axios.post('https://api.mercadolibre.com/items', listingSimples, {
-            headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
-          });
-          return data3;
-        }
-        throw e2;
+    const required = (data || []).filter(a => a.tags && (a.tags.required || a.tags.buy_box_winner));
+    const attributes = [];
+    for (const attr of required) {
+      if (attr.value_type === 'list' && attr.values && attr.values.length > 0) {
+        // Usar primeiro valor da lista
+        attributes.push({ id: attr.id, value_id: attr.values[0].id });
+      } else if (attr.value_type === 'number_unit') {
+        // Valor numerico: usar "40 cm" como padrao
+        attributes.push({ id: attr.id, value_name: '40 cm' });
+      } else if (attr.value_type === 'boolean') {
+        attributes.push({ id: attr.id, value_id: '242084' }); // "Nao"
+      } else {
+        // String: usar "Nao informado"
+        attributes.push({ id: attr.id, value_name: 'Nao informado' });
       }
     }
+    console.log('[ML] Atributos montados para', categoryId, ':', attributes.map(a => a.id).join(', '));
+    return attributes;
+  } catch (e) {
+    console.log('[ML] Erro ao buscar atributos:', e.message);
+    return [];
+  }
+}
 
-    // Se erro for de categoria (leaf) -> tenta categoria generica
-    const leafError = causes.some(c =>
-      String(c.message || '').includes('leaf') ||
-      c.code === 'item.category_id.invalid'
-    );
-    if (leafError || errMsg.includes('leaf')) {
-      console.log('[PUBLICAR] Categoria nao-leaf, tentando MLB1648...');
-      listing.category_id = 'MLB1648';
-      delete listing.attributes;
-      const { data: data4 } = await axios.post('https://api.mercadolibre.com/items', listing, {
+// ====== Tentar publicar no ML com multiplos fallbacks ======
+async function publicarNoML(titulo, preco, imagem, accessToken, categoriaSugerida) {
+  const baseListagem = {
+    price: preco,
+    currency_id: 'BRL',
+    available_quantity: 1,
+    buying_mode: 'buy_it_now',
+    condition: 'new',
+    listing_type_id: 'free',
+    description: { plain_text: titulo + '\n\nProduto novo, qualidade garantida. Enviamos para todo o Brasil!' },
+    pictures: [{ source: imagem }],
+  };
+
+  // Tentativas em ordem de preferencia
+  const tentativas = [];
+
+  if (categoriaSugerida) {
+    // Tentativa 1: categoria detectada com atributos
+    const attrs = await buildAttributes(categoriaSugerida, accessToken);
+    if (attrs.length > 0) {
+      tentativas.push({ title: titulo, ...baseListagem, category_id: categoriaSugerida, attributes: attrs });
+    }
+    // Tentativa 2: categoria detectada sem atributos
+    tentativas.push({ title: titulo, ...baseListagem, category_id: categoriaSugerida });
+  }
+
+  // Tentativa 3: categoria Outros - Esportes e Fitness (MLB198237 sem attrs, ou outra)
+  // Tentativa 4: Outros - Utilidades Domesticas (MLB12456 - leaf)
+  const catsFallback = ['MLB12456', 'MLB43794', 'MLB5726', 'MLB271599'];
+  for (const cat of catsFallback) {
+    tentativas.push({ title: titulo, ...baseListagem, category_id: cat });
+  }
+
+  let lastError = null;
+  for (const listing of tentativas) {
+    try {
+      console.log('[PUBLICAR] Tentando cat:', listing.category_id, attrs_count = listing.attributes?.length || 0, 'attrs');
+      const { data } = await axios.post('https://api.mercadolibre.com/items', listing, {
         headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
       });
-      return data4;
-    }
+      console.log('[PUBLICAR] Sucesso com cat:', listing.category_id);
+      return data;
+    } catch (e) {
+      const errBody = e.response?.data;
+      const causes = errBody?.cause || [];
+      const msgs = causes.map(c => (c.message || c.code || '')).join('; ');
+      console.log('[PUBLICAR] Falhou cat:', listing.category_id, '-', errBody?.message || e.message, msgs);
+      lastError = e;
 
-    throw e1;
+      // Parar se erro nao for de validacao/categoria (ex: auth error)
+      const status = e.response?.status;
+      if (status === 401 || status === 403) throw e;
+    }
   }
+
+  // Todos falharam
+  throw lastError;
 }
 
 // ====== OAuth Mercado Livre ======
@@ -320,7 +340,7 @@ app.get('/api/buscar-produtos', async (req, res) => {
 // ====== Publicar produto no ML ======
 app.post('/api/publicar', async (req, res) => {
   try {
-    const { pid, titulo, preco_brl, imagem, categoria_ml, quantidade } = req.body;
+    const { pid, titulo, preco_brl, imagem, categoria_ml } = req.body;
 
     // Token com refresh automatico
     let accessToken, userId;
@@ -334,25 +354,11 @@ app.post('/api/publicar', async (req, res) => {
       return res.status(400).json({ error: 'ML nao conectado. ' + tokenErr.message });
     }
 
-    // Detectar categoria leaf
-    const catId = categoria_ml || await getCategoryId(titulo, accessToken);
+    // Detectar categoria
+    const catSugerida = categoria_ml || await getCategoryId(titulo, accessToken);
 
-    const listing = {
-      title: titulo,
-      category_id: catId,
-      price: preco_brl,
-      currency_id: 'BRL',
-      available_quantity: 1,
-      buying_mode: 'buy_it_now',
-      condition: 'new',
-      listing_type_id: 'free',
-      description: { plain_text: titulo + '\n\nProduto novo, qualidade garantida. Enviamos para todo o Brasil!' },
-      pictures: [{ source: imagem }],
-    };
-
-    console.log('[PUBLICAR] Tentando:', JSON.stringify({ title: titulo.slice(0,40), category_id: catId, price: preco_brl }));
-
-    const mlData = await publicarNoML(listing, accessToken);
+    // Publicar com fallbacks automaticos
+    const mlData = await publicarNoML(titulo, preco_brl, imagem, accessToken, catSugerida);
 
     await supabase.from('produtos').upsert({
       ml_item_id: mlData.id,
@@ -364,7 +370,7 @@ app.post('/api/publicar', async (req, res) => {
       ml_user_id: userId
     });
 
-    console.log('[PUBLICAR] Sucesso!', mlData.id, mlData.permalink);
+    console.log('[PUBLICAR] Item criado:', mlData.id, mlData.permalink);
     res.json({ success: true, ml_id: mlData.id, permalink: mlData.permalink });
 
   } catch (e) {
@@ -436,6 +442,6 @@ cron.schedule('0 */2 * * *', async () => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log('DropFacil v5.3 porta ' + PORT);
+  console.log('DropFacil v5.4 porta ' + PORT);
   getCjToken().then(() => console.log('[INIT] Token CJ ok')).catch(e => console.error('[INIT CJ]', e.message));
 });
