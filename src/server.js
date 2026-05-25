@@ -80,27 +80,82 @@ async function getCategoryId(titulo, accessToken) {
       { headers: { Authorization: 'Bearer ' + accessToken } }
     );
     if (data && data[0] && data[0].category_id) {
-      console.log('[ML] Categoria detectada:', data[0].category_id, 'para:', titulo);
+      console.log('[ML] Categoria detectada:', data[0].category_id, 'para:', titulo.slice(0,50));
       return data[0].category_id;
     }
   } catch (e) {
-    console.log('[ML] Falha ao detectar categoria, usando padrao');
+    console.log('[ML] Falha ao detectar categoria:', e.message);
   }
-  return 'MLB1648'; // Outros - categoria generica leaf
+  return 'MLB1648';
 }
 
-// ====== Buscar atributos obrigatorios da categoria ======
-async function getRequiredAttributes(categoryId, accessToken) {
+// ====== Publicar no ML com retry sem atributos ======
+async function publicarNoML(listing, accessToken) {
+  // Tentativa 1: com atributos
   try {
-    const { data } = await axios.get(
-      'https://api.mercadolibre.com/categories/' + categoryId + '/attributes',
-      { headers: { Authorization: 'Bearer ' + accessToken } }
+    const { data } = await axios.post('https://api.mercadolibre.com/items', listing, {
+      headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
+    });
+    return data;
+  } catch (e1) {
+    const errBody = e1.response?.data;
+    const causes = errBody?.cause || [];
+    const errMsg = JSON.stringify(errBody).toLowerCase();
+
+    // Se erro for de atributo invalido ou normalizable -> retry sem atributos
+    const attrError = causes.some(c =>
+      c.code === 'item.attributes.normalizable.invalid' ||
+      c.code === 'item.attributes.missing_required' ||
+      String(c.message || '').includes('attribute') ||
+      String(c.message || '').includes('Attribute')
     );
-    return (data || []).filter(a =>
-      a.tags && (a.tags.required || a.tags.buy_box_winner)
+
+    if (attrError) {
+      console.log('[PUBLICAR] Erro de atributo, tentando sem atributos...');
+      const listingSimples = Object.assign({}, listing);
+      delete listingSimples.attributes;
+      try {
+        const { data: data2 } = await axios.post('https://api.mercadolibre.com/items', listingSimples, {
+          headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
+        });
+        return data2;
+      } catch (e2) {
+        const errBody2 = e2.response?.data;
+        const causes2 = errBody2?.cause || [];
+        const leafError = causes2.some(c =>
+          String(c.message || '').includes('leaf') ||
+          c.code === 'item.category_id.invalid'
+        );
+
+        // Se erro for de categoria -> tenta categoria generica
+        if (leafError || String(JSON.stringify(errBody2)).includes('leaf')) {
+          console.log('[PUBLICAR] Erro de categoria, tentando MLB1648...');
+          listingSimples.category_id = 'MLB1648';
+          const { data: data3 } = await axios.post('https://api.mercadolibre.com/items', listingSimples, {
+            headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
+          });
+          return data3;
+        }
+        throw e2;
+      }
+    }
+
+    // Se erro for de categoria (leaf) -> tenta categoria generica
+    const leafError = causes.some(c =>
+      String(c.message || '').includes('leaf') ||
+      c.code === 'item.category_id.invalid'
     );
-  } catch (e) {
-    return [];
+    if (leafError || errMsg.includes('leaf')) {
+      console.log('[PUBLICAR] Categoria nao-leaf, tentando MLB1648...');
+      listing.category_id = 'MLB1648';
+      delete listing.attributes;
+      const { data: data4 } = await axios.post('https://api.mercadolibre.com/items', listing, {
+        headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
+      });
+      return data4;
+    }
+
+    throw e1;
   }
 }
 
@@ -282,27 +337,12 @@ app.post('/api/publicar', async (req, res) => {
     // Detectar categoria leaf
     const catId = categoria_ml || await getCategoryId(titulo, accessToken);
 
-    // Buscar atributos obrigatorios
-    const requiredAttrs = await getRequiredAttributes(catId, accessToken);
-    console.log('[PUBLICAR] Categoria:', catId, '| Atributos obrigatorios:', requiredAttrs.map(a => a.id).join(', '));
-
-    // Montar atributos com valores genericos para nao quebrar
-    const attributes = requiredAttrs.map(attr => {
-      if (attr.value_type === 'list' && attr.values && attr.values.length > 0) {
-        return { id: attr.id, value_id: attr.values[0].id };
-      }
-      return { id: attr.id, value_name: 'Nao informado' };
-    });
-
-    // Listing free: quantidade maxima = 1
-    const qty = 1;
-
     const listing = {
       title: titulo,
       category_id: catId,
       price: preco_brl,
       currency_id: 'BRL',
-      available_quantity: qty,
+      available_quantity: 1,
       buying_mode: 'buy_it_now',
       condition: 'new',
       listing_type_id: 'free',
@@ -310,37 +350,9 @@ app.post('/api/publicar', async (req, res) => {
       pictures: [{ source: imagem }],
     };
 
-    if (attributes.length > 0) {
-      listing.attributes = attributes;
-    }
+    console.log('[PUBLICAR] Tentando:', JSON.stringify({ title: titulo.slice(0,40), category_id: catId, price: preco_brl }));
 
-    console.log('[PUBLICAR] Enviando para ML:', JSON.stringify({ title: listing.title, category_id: listing.category_id, price: listing.price, qty: listing.available_quantity }));
-
-    let mlData;
-    try {
-      const { data } = await axios.post('https://api.mercadolibre.com/items', listing, {
-        headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
-      });
-      mlData = data;
-    } catch (mlErr) {
-      const errBody = mlErr.response?.data;
-      console.error('[PUBLICAR ERRO ML]', JSON.stringify(errBody));
-
-      // Tenta categoria mais generica se falhou
-      if (errBody?.cause && errBody.cause.some(c => c.code === 'item.category_id.invalid' || String(c.message || '').includes('leaf'))) {
-        console.log('[PUBLICAR] Tentando categoria generica MLB1648...');
-        listing.category_id = 'MLB1648';
-        delete listing.attributes;
-        const { data: data2 } = await axios.post('https://api.mercadolibre.com/items', listing, {
-          headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }
-        });
-        mlData = data2;
-      } else {
-        const msg = errBody?.message || errBody?.error || mlErr.message;
-        const causes = (errBody?.cause || []).map(c => c.message || c.code).join('; ');
-        throw new Error(msg + (causes ? ' | Detalhes: ' + causes : ''));
-      }
-    }
+    const mlData = await publicarNoML(listing, accessToken);
 
     await supabase.from('produtos').upsert({
       ml_item_id: mlData.id,
@@ -352,16 +364,17 @@ app.post('/api/publicar', async (req, res) => {
       ml_user_id: userId
     });
 
-    console.log('[PUBLICAR] Sucesso! Item:', mlData.id, mlData.permalink);
+    console.log('[PUBLICAR] Sucesso!', mlData.id, mlData.permalink);
     res.json({ success: true, ml_id: mlData.id, permalink: mlData.permalink });
 
   } catch (e) {
-    const msg = e.response?.data?.message || e.response?.data?.error || e.message;
-    const causes = (e.response?.data?.cause || []).map(c => c.message || c.code).join('; ');
-    console.error('[PUBLICAR ERRO FINAL]', msg, causes);
+    const errBody = e.response?.data;
+    const msg = errBody?.message || errBody?.error || e.message;
+    const causes = (errBody?.cause || []).map(c => c.message || c.code).join('; ');
+    console.error('[PUBLICAR ERRO FINAL]', msg, causes || '');
     res.status(500).json({
       error: msg + (causes ? ' | ' + causes : ''),
-      detail: e.response?.data?.cause || null
+      detail: errBody?.cause || null
     });
   }
 });
@@ -423,6 +436,6 @@ cron.schedule('0 */2 * * *', async () => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log('DropFacil v5.2 porta ' + PORT);
+  console.log('DropFacil v5.3 porta ' + PORT);
   getCjToken().then(() => console.log('[INIT] Token CJ ok')).catch(e => console.error('[INIT CJ]', e.message));
 });
