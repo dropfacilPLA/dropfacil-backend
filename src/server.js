@@ -122,15 +122,23 @@ async function buildAttributes(categoryId, accessToken) {
 }
 
 // ====== Tentar publicar no ML com multiplos fallbacks ======
-async function publicarNoML(titulo, preco, imagem, accessToken, categoriaSugerida) {
+async function publicarNoML(titulo, preco, imagem, accessToken, categoriaSugerida, quantidade) {
+  const qtd = (quantidade && quantidade > 0) ? quantidade : 1;
   const baseListagem = {
     price: preco,
     currency_id: 'BRL',
-    available_quantity: 1,
+    available_quantity: qtd,
     buying_mode: 'buy_it_now',
     condition: 'new',
     listing_type_id: 'free',
-    description: { plain_text: titulo + '\n\nProduto novo, qualidade garantida. Enviamos para todo o Brasil!' },
+    shipping: {
+      mode: 'me2',
+      local_pick_up: false,
+      free_shipping: false,
+      methods: [],
+      dimensions: null
+    },
+    description: { plain_text: titulo + '\n\nEnvio pelo Mercado Envios. Produto novo com qualidade garantida.' },
     pictures: [{ source: imagem }],
   };
 
@@ -149,7 +157,7 @@ async function publicarNoML(titulo, preco, imagem, accessToken, categoriaSugerid
 
   // Tentativa 3: categoria Outros - Esportes e Fitness (MLB198237 sem attrs, ou outra)
   // Tentativa 4: Outros - Utilidades Domesticas (MLB12456 - leaf)
-  const catsFallback = ['MLB12456', 'MLB43794', 'MLB5726', 'MLB271599'];
+  const catsFallback = ['MLB12456', 'MLB43794', 'MLB5726', 'MLB3937'];
   for (const cat of catsFallback) {
     tentativas.push({ title: titulo, ...baseListagem, category_id: cat });
   }
@@ -341,7 +349,7 @@ app.get('/api/buscar-produtos', async (req, res) => {
 // ====== Publicar produto no ML ======
 app.post('/api/publicar', async (req, res) => {
   try {
-    const { pid, titulo, preco_brl, imagem, categoria_ml } = req.body;
+    const { pid, titulo, preco_brl, imagem, categoria_ml, quantidade } = req.body;
 
     // Token com refresh automatico
     let accessToken, userId;
@@ -359,7 +367,7 @@ app.post('/api/publicar', async (req, res) => {
     const catSugerida = categoria_ml || await getCategoryId(titulo, accessToken);
 
     // Publicar com fallbacks automaticos
-    const mlData = await publicarNoML(titulo, preco_brl, imagem, accessToken, catSugerida);
+    const mlData = await publicarNoML(titulo, preco_brl, imagem, accessToken, catSugerida, quantidade);
 
     await supabase.from('produtos').upsert({
       ml_item_id: mlData.id,
