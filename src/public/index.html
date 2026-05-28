@@ -125,7 +125,7 @@ tr:hover td{background:#0d1117}
 <div class="int"><div class="int-i">🛍️</div><div><div class="int-n">Mercado Livre</div><div class="int-s" id="ml-status-txt">Verificando...</div></div><span class="badge" id="ml-badge">...</span></div>
 <div class="int"><div class="int-i">📦</div><div><div class="int-n">CJ Dropshipping</div><div class="int-s">CJ5445478 · pklalmeida@hotmail.com</div></div><span class="badge bs">ATIVO</span></div>
 <div class="int"><div class="int-i">🍊</div><div><div class="int-n">Shopee</div><div class="int-s">techdropbrasil · em aprovação</div></div><span class="badge bp">AGUARDANDO</span></div>
-<div class="int"><div class="int-i">🏦</div><div><div class="int-n">Nubank / Mercado Pago</div><div class="int-s">Conta vinculada via Shopee</div></div><span class="badge bw">PENDENTE</span></div>
+<div class="int"><div class="int-i">🇧🇷</div><div><div class="int-n">Bling (Nacional)</div><div class="int-s" id="bling-status-txt">Verificando...</div></div><span class="badge" id="bling-badge">...</span></div>
 </div></div>
 <div class="box">
 <div class="tabs">
@@ -133,6 +133,7 @@ tr:hover td{background:#0d1117}
 <button class="tab" onclick="tab('meus',this)">📋 Meus Produtos</button>
 <button class="tab" onclick="tab('pedidos',this)">📦 Pedidos</button>
 <button class="tab" onclick="tab('sync',this)">🔄 Sync</button>
+<button class="tab" onclick="tab('bling',this)">🇧🇷 Nacional</button>
 </div>
 <div id="t-buscar" class="tc on">
 <div class="auto-banner">
@@ -165,6 +166,27 @@ tr:hover td{background:#0d1117}
 <div class="btn-r"><button class="btn ba" onclick="syncPedidos()">🔄 Sincronizar Pedidos ML</button></div>
 <table><thead><tr><th>Pedido</th><th>Comprador</th><th>Valor</th><th>Lucro Est.</th><th>Status</th><th>Data</th><th>Acao</th></tr></thead>
 <tbody id="t-ped-body"><tr><td colspan="7" style="text-align:center;color:#475569;padding:20px">Carregando...</td></tr></tbody></table>
+</div>
+<div id="t-bling" class="tc">
+<div class="auto-banner" style="background:linear-gradient(135deg,#0a2e1a,#052e16);border-color:#166534">
+<div class="auto-banner-t" style="color:#4ade80">🇧🇷 Fornecedor Nacional — Entrega 2 a 5 dias uteis</div>
+<div class="auto-banner-s" style="color:#16a34a">Sem contato com produto. O fornecedor despacha direto pelo Mercado Envios para o cliente.</div>
+<div class="auto-controls">
+<input class="si" id="q-bling" placeholder="Buscar produto nacional..." style="max-width:300px">
+<button class="btn bg" onclick="buscarBling()">🔍 Buscar Nacional</button>
+</div>
+<div id="bling-info" style="font-size:11px;color:#4ade80;margin-top:8px"></div>
+</div>
+<div id="bling-setup" style="background:#0d1117;border:1px solid #166534;border-radius:10px;padding:16px;margin-bottom:14px;display:none">
+<div style="font-size:13px;font-weight:700;color:#4ade80;margin-bottom:8px">⚙️ Como configurar o Bling</div>
+<div style="font-size:12px;color:#9ca3af;line-height:1.8">
+1. Acesse <a href="https://www.bling.com.br" target="_blank" style="color:#4ade80">bling.com.br</a> e crie sua conta gratis<br>
+2. Va em Configuracoes → Integracao → API<br>
+3. Gere uma API Key e adicione como variavel <code style="background:#1f2937;padding:2px 6px;border-radius:4px">BLING_API_KEY</code> no Railway<br>
+4. Apos configurar, os produtos nacionais aparecerao aqui
+</div>
+</div>
+<div class="pg" id="grid-bling"><div class="load">Configure o Bling para ver produtos nacionais aqui. Clique no banner acima para instrucoes.</div></div>
 </div>
 <div id="t-sync" class="tc">
 <div class="btn-r"><button class="btn bl" onclick="syncPedidos()">🔄 Sync Agora</button><button class="btn bg" onclick="testar()">✅ Testar CJ</button><button class="btn bv" onclick="toggleLog()">📋 Log</button></div>
@@ -204,7 +226,7 @@ tr:hover td{background:#0d1117}
 <button class="btn" onclick="document.getElementById('modal-preview').classList.remove('open')" style="background:#1f2937;color:#9ca3af">Cancelar</button>
 </div></div></div>
 <div class="toast" id="toast"></div>
-<div class="f">DropFacil v5.7 · Patrick Luan · 100% Automatizado</div>
+<div class="f">DropFacil v5.6 · Patrick Luan · 100% Automatizado</div>
 <script>
 const USD=5.10,TAXA=0.12,IMP=0.06,FRETE=8;
 let autoRun=false,prvProds=[],prvDel=new Set();
@@ -528,7 +550,8 @@ toast('⏳ Publicando...','info');
 try{
 var r=await fetch('/api/publicar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 var d=await r.json();
-if(d.success){closeModal();toast('✅ Publicado! ID: '+d.ml_id);setTimeout(function(){loadStats();},2000);}
+if(d.success){closeModal();toast('✅ Publicado! ID: '+d.ml_id);setTimeout(function(){loadStats();
+  loadBlingStatus();},2000);}
 else toast('❌ '+d.error,'err');
 }catch(e){toast('❌ '+e.message,'err');}
 }
@@ -685,5 +708,79 @@ if(p.get('erro'))toast('❌ Erro: '+p.get('msg'),'err');
 loadStats();
 buscarTop();
 };
+
+
+async function buscarBling() {
+  var q = document.getElementById('q-bling').value;
+  var g = document.getElementById('grid-bling');
+  var info = document.getElementById('bling-info');
+  g.innerHTML = '<div class="load">⏳ Buscando produtos nacionais...</div>';
+  info.textContent = '';
+  try {
+    var r = await fetch('/api/bling/produtos' + (q ? '?q=' + encodeURIComponent(q) : ''));
+    var ps = await r.json();
+    if (ps.error) {
+      if (ps.instrucoes) {
+        document.getElementById('bling-setup').style.display = 'block';
+        g.innerHTML = '<div class="load" style="color:#fbbf24">⚙️ Bling nao configurado ainda. Siga as instrucoes acima.</div>';
+      } else {
+        g.innerHTML = '<div class="load" style="color:#f87171">Erro: ' + ps.error + '</div>';
+      }
+      return;
+    }
+    if (!ps.length) { g.innerHTML = '<div class="load">Nenhum produto encontrado.</div>'; return; }
+    info.textContent = ps.length + ' produtos nacionais encontrados';
+    g.innerHTML = '';
+    ps.forEach(function(p, i) {
+      window._prods_bling = window._prods_bling || [];
+      window._prods_bling[i] = p;
+      var ml = parseFloat((p.preco_brl * 2.2).toFixed(2));
+      var d = document.createElement('div'); d.className = 'pc';
+      var img = document.createElement('img'); img.className = 'pi'; img.src = p.imagem || ''; img.onerror = function(){imgErr(this);};
+      var body = document.createElement('div'); body.style.cssText = 'flex:1;min-width:0';
+      var nm = document.createElement('div'); nm.className = 'pn'; nm.textContent = p.nome;
+      var sk = document.createElement('div'); sk.className = 'ps'; sk.textContent = 'SKU: ' + p.sku + ' | Estoque: ' + (p.estoque||'?');
+      var pp = document.createElement('div'); pp.className = 'pp';
+      var c1 = document.createElement('span'); c1.className = 'pp-c'; c1.textContent = 'Custo: R$ ' + (p.preco_brl||0).toFixed(2);
+      var c2 = document.createElement('span'); c2.className = 'pp-m'; c2.textContent = 'ML: R$ ' + ml.toFixed(2);
+      var tag = document.createElement('span'); tag.style.cssText='background:#052e16;color:#4ade80;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700'; tag.textContent='🇧🇷 NACIONAL';
+      pp.appendChild(c1); pp.appendChild(c2); pp.appendChild(tag);
+      var pa = document.createElement('div'); pa.className = 'pa';
+      var b1 = document.createElement('button'); b1.className = 'bs2 g'; b1.textContent = '🚀 Publicar';
+      b1.onclick = (function(idx){ return function(){ abrirModalBling(idx); }; })(i);
+      pa.appendChild(b1);
+      body.appendChild(nm); body.appendChild(sk); body.appendChild(pp); body.appendChild(pa);
+      d.appendChild(img); d.appendChild(body);
+      g.appendChild(d);
+    });
+  } catch(e) { g.innerHTML = '<div class="load" style="color:#f87171">Erro: ' + e.message + '</div>'; }
+}
+
+function abrirModalBling(idx) {
+  var p = (window._prods_bling || [])[idx];
+  if (!p) return;
+  document.getElementById('m-pid').value = p.pid || '';
+  document.getElementById('m-img').value = p.imagem || '';
+  document.getElementById('m-title').value = p.nome;
+  document.getElementById('m-cj').value = (p.preco_brl / 5.10).toFixed(2); // converter pra USD p calcular
+  var ml = parseFloat((p.preco_brl * 2.2).toFixed(2));
+  document.getElementById('m-ml').value = ml;
+  document.getElementById('m-qtd').value = p.estoque || 10;
+  // Marcar como fonte bling
+  document.getElementById('m-fonte') && (document.getElementById('m-fonte').value = 'bling');
+  calcTudo();
+  document.getElementById('modal').classList.add('open');
+}
+
+async function loadBlingStatus() {
+  try {
+    var r = await fetch('/api/bling/status');
+    var d = await r.json();
+    var txt = document.getElementById('bling-status-txt');
+    var badge = document.getElementById('bling-badge');
+    if (txt) txt.textContent = d.conectado ? (d.nome || 'Bling conectado') : 'Nao configurado';
+    if (badge) { badge.textContent = d.conectado ? 'ATIVO' : 'CONFIGURAR'; badge.className = 'badge ' + (d.conectado ? 'bs' : 'bw'); }
+  } catch(e) {}
+}
 </script>
 </body></html>
