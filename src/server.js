@@ -19,7 +19,8 @@ app.use('/api/cj', require('./routes/cjdropshipping'));
 app.use('/api/produtos', require('./routes/produtos'));
 app.use('/api/pedidos', require('./routes/pedidos'));
 app.use('/api/dashboard', require('./routes/dashboard'));
-
+// Rota legada: /api/publicar -> redireciona para /api/ml/anuncio
+app.post('/api/publicar', (req, res) => { req.url = '/anuncio'; require('./routes/mercadolivre')(req, res); });
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ====== CJ TOKEN CACHE ======
